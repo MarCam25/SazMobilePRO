@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#f4f4f3"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Numero de orden: "
+                    android:textColor="#3f3f40"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginLeft="15dp"
+                    android:textStyle="bold"
+                    />
+
+                <TextView
+                    android:id="@+id/NumOrden"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="20190125015726 "
+                    android:textColor="#3f3f40"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginLeft="15dp"
+                    android:textStyle="bold"
+                    />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Total: "
+                        android:textColor="#3f3f40"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginLeft="15dp"
+                        android:textStyle="bold"
+                        />
+
+                    <TextView
+                        android:id="@+id/idTotal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="20190125015726 "
+                        android:textColor="#3f3f40"
+                        android:layout_marginTop="1dp"
+                        android:layout_marginLeft="15dp"
+                        android:textStyle="bold"
+                        />
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="27dp"
+                    android:layout_marginTop="15dp"
+                    android:text="Cliente:"
+                    android:textColor="#3f3f40"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/cliente"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="27dp"
+                    android:layout_marginTop="1dp"
+                    android:text="juan antonio"
+                    android:textColor="#3f3f40"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="17dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="12dp"
+                        android:layout_marginTop="15dp"
+                        android:text="Pares:"
+                        android:textColor="#3f3f40"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/idpares"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="12dp"
+                        android:layout_marginTop="1dp"
+                        android:text="juan antonio"
+                        android:textColor="#3f3f40"
+                        android:textStyle="bold" />
+
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Empleado:"
+                    android:textColor="#3f3f40"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginLeft="15dp"
+                    android:textStyle="bold"
+                    />
+                <TextView
+                    android:id="@+id/idEmpleado"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="juan antonio"
+                    android:textColor="#3f3f40"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginLeft="15dp"
+                    android:textStyle="bold"
+                    />
+                <TextView
+                    android:id="@+id/idOrden"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="juan antonio"
+                    android:background="#f4f4f3"
+                    android:textColor="#f4f4f3"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginLeft="15dp"
+
+                    />
+
+
+
+
+
+
+            </LinearLayout>
+
+
+
+        </LinearLayout>
+        <Button
+            android:id="@+id/idAtender"
+            android:layout_width="400dp"
+            android:layout_height="wrap_content"
+            android:text="ATENDER"
+            android:layout_marginTop="10dp"
+            android:textColor="#f4f4f3"
+            android:textSize="20dp"
+            android:layout_gravity="center"
+            android:background="@drawable/btn_buscar"
+            />
+
+        <TextView
+            android:layout_width="500dp"
+            android:layout_height="10dp"
+            android:layout_marginTop="5dp"
+            android:background="#ffffff"
+            />
+
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

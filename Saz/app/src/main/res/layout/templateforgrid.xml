@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/EstiloView"
+            android:layout_width="50dp"
+            android:textColor="#cf0209"
+            android:textStyle="bold"
+            android:layout_height="wrap_content"
+            android:textSize="14dp"
+            android:text="qwerty"
+            android:layout_marginLeft="10dp"
+            />
+        <TextView
+            android:id="@+id/MarcaView"
+            android:textColor="#cf0209"
+            android:textStyle="bold"
+            android:layout_width="44dp"
+            android:textSize="14dp"
+            android:layout_height="wrap_content"
+            android:text="qwerty"
+            android:layout_marginLeft="0dp"
+            />
+        <TextView
+            android:id="@+id/ColorView"
+            android:textColor="#cf0209"
+            android:textStyle="bold"
+            android:layout_width="60dp"
+            android:textSize="14dp"
+            android:layout_height="wrap_content"
+            android:text="qwerty"
+            android:layout_marginLeft="15dp"
+            />
+        <TextView
+            android:id="@+id/PuntoView"
+            android:textSize="14dp"
+            android:layout_width="45dp"
+            android:textColor="#cf0209"
+            android:textStyle="bold"
+            android:layout_height="wrap_content"
+            android:text="25.0"
+            android:layout_marginLeft="17dp"
+            />
+        <TextView
+            android:id="@+id/CantidadView"
+            android:textSize="14dp"
+            android:layout_width="20dp"
+            android:layout_height="wrap_content"
+            android:textColor="#cf0209"
+            android:textStyle="bold"
+            android:text="4"
+            android:layout_marginLeft="5dp"
+            />
+        <TextView
+            android:id="@+id/SubView"
+            android:layout_width="60dp"
+            android:textSize="14dp"
+            android:textColor="#cf0209"
+            android:textStyle="bold"
+            android:layout_height="wrap_content"
+            android:text="qwerty"
+            android:layout_marginLeft="30dp"
+            />
+
+        <TextView
+            android:id="@+id/TotalView"
+            android:layout_width="60dp"
+            android:textColor="#cf0209"
+            android:textStyle="bold"
+            android:textSize="14dp"
+            android:layout_height="wrap_content"
+            android:text="qwerty"
+            android:layout_marginLeft="8dp"
+            />
+
+
+
+
+    </LinearLayout>
+</LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

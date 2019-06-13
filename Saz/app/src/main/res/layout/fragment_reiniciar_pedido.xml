@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ReiniciarPedido"
+
+    android:background="#e7e1e1"
+    >
+<android.support.v7.widget.LinearLayoutCompat
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:text="Ingresa el tiempo para las ordenes en MINUTOS"
+        android:textSize="18dp"
+        android:textColor="#004d73"
+        android:background="#004d73"
+        android:layout_marginTop="150dp"
+
+        />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Selecciona el tiempo para reiniciar las órdenes en MINUTOS"
+        android:textSize="18dp"
+        android:layout_gravity="center"
+        android:layout_marginLeft="10dp"
+        android:textColor="#004d73"
+        android:layout_marginTop="100dp"
+
+        />
+
+
+    <Spinner
+        android:id="@+id/spHora"
+        android:layout_marginTop="50dp"
+        android:layout_width="150dp"
+        android:layout_gravity="center"
+        android:layout_height="wrap_content"
+        style="@style/spinner_style"
+        ></Spinner>
+
+    <Button
+        android:id="@+id/idaceptar"
+        android:layout_width="300dp"
+        android:layout_marginTop="50dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="ACEPTAR"
+        android:background="@drawable/btn_buscar"
+        android:textSize="20dp"
+        android:textColor="#ffff"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:text="Ingresa el tiempo para las ordenes en MINUTOS"
+        android:textSize="18dp"
+
+        android:background="#004d73"
+        android:layout_marginTop="100dp"
+
+        />
+
+</android.support.v7.widget.LinearLayoutCompat>
+
+
+
+</FrameLayout>

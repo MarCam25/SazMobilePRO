@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Area"
+    android:background="#f4f4f3"
+    >
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#f4f4f3"
+        android:orientation="vertical"
+        >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#036ca1"
+            android:text="Dar de alta Zona de surtido"
+            android:gravity="center"
+            android:textColor="#ffffff"
+            android:textSize="25dp"
+            android:layout_marginTop="10dp"
+            />
+
+        <EditText
+            android:id="@+id/idZonaEd"
+            android:inputType="textCapCharacters"
+            android:layout_width="350dp"
+            android:layout_height="wrap_content"
+            android:background="#d6d2d2"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#036ca1"
+            android:text="Asignar un área"
+            android:gravity="center"
+            android:textColor="#ffffff"
+            android:textSize="25dp"
+            android:layout_marginTop="20dp"
+            />
+
+       <Spinner
+           android:id="@+id/ListaArea"
+           android:layout_width="350dp"
+           android:layout_height="wrap_content"
+           style="@style/spinner_style"
+           android:layout_gravity="center"
+           android:layout_marginTop="20dp"
+           ></Spinner>
+
+        
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            >
+
+        <Button
+            android:id="@+id/idGuardar"
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
+            android:text="GUARDAR"
+            android:layout_gravity="center"
+            android:textColor="#ffffff"
+            android:background="@drawable/btn_buscar"
+            />
+            <TextView
+                android:layout_width="10dp"
+                android:layout_height="1dp" />
+        <Button
+            android:id="@+id/idActualizarZona"
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
+            android:text="ACTUALIZAR"
+            android:layout_gravity="center"
+            android:textColor="#ffffff"
+            android:background="@drawable/btn_buscar"
+            />
+
+        </LinearLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="25dp"
+            android:textColor="#ffffff"
+            android:background="#036ca1"
+            android:text="Zonas existentes"
+            android:layout_marginTop="10dp"
+            />
+
+
+
+
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyZonas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+
+
+
+
+
+
+
+
+
+
+    </LinearLayout>
+
+
+</android.support.constraint.ConstraintLayout>

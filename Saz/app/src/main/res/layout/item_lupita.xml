@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff"
+    >
+
+
+    <LinearLayout
+        android:layout_width="1000dp"
+        android:layout_height="wrap_content"
+        android:background="#f4f4f3"
+        android:orientation="vertical"
+        >
+
+
+        <LinearLayout
+            android:layout_width="1000dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+            <TextView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tienda:"
+                android:textSize="25dp"
+                android:textColor="#3f3f40"
+                android:layout_marginLeft="10dp"
+                />
+        <TextView
+            android:id="@+id/tiendatxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tienda"
+            android:textSize="20dp"
+            android:textColor="#3f3f40"
+            android:layout_marginLeft="10dp"
+            />
+        </LinearLayout>
+
+        <TextView
+
+            android:layout_width="1000dp"
+            android:layout_height="3dp"
+            android:textSize="30dp"
+            android:background="#036ca1"
+
+            />
+    <LinearLayout
+        android:layout_width="1000dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+        <TextView
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Existencia:"
+            android:textSize="25dp"
+            android:textColor="#3f3f40"
+            android:layout_marginLeft="10dp"
+            />
+        <TextView
+            android:id="@+id/puntotxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Punto"
+            android:textSize="20dp"
+            android:textColor="#3f3f40"
+            android:layout_marginLeft="10dp"
+            />
+    </LinearLayout>
+        <TextView
+
+            android:layout_width="1000dp"
+            android:layout_height="10dp"
+            android:background="#036ca1"
+
+            />
+
+
+    </LinearLayout>
+
+
+
+</android.support.constraint.ConstraintLayout>

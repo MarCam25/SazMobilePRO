@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".RegistroArea">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#e7e1e1"
+        android:orientation="vertical"
+
+        >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#036ca1"
+            android:text="Registro de Área"
+            android:gravity="center"
+            android:textColor="#ffffff"
+            android:textSize="25dp"
+            android:layout_marginTop="10dp"
+            />
+
+        <EditText
+            android:id="@+id/idZona"
+            android:inputType="textCapCharacters"
+            android:layout_width="350dp"
+            android:layout_height="wrap_content"
+            android:background="#a6a0a0"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal"
+            android:gravity="center"
+            >
+        <Button
+            android:id="@+id/idGuardar"
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
+            android:text="GUARDAR"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:textColor="#ffff"
+            android:background="@drawable/btn_buscar"
+            />
+
+            <TextView
+                android:layout_width="10dp"
+                android:layout_height="1dp" />
+
+        <Button
+            android:id="@+id/idActualizar"
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
+            android:text="Actualizar"
+            android:layout_gravity="center"
+            android:textColor="#ffff"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/btn_buscar"
+            />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginTop="10sp"
+                android:textSize="25dp"
+                android:textColor="#ffffff"
+                android:background="#036ca1"
+                android:text="Áreas existentes"
+                />
+
+        </LinearLayout>
+
+
+
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyAreas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+
+
+
+
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

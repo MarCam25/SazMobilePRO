@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#f4f4f3"
+    >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="#f4f4f3"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="#f4f4f3"
+            >
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="#f4f4f3"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Estilo: "
+                    android:textColor="#3f3f40"
+                    android:textSize="20dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginLeft="15dp"
+                    android:textStyle="bold"
+                    />
+
+                <TextView
+                    android:id="@+id/idEstilo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="GBOX"
+                    android:textSize="18dp"
+                    android:textColor="#3f3f40"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginLeft="15dp"
+                    android:textStyle="bold"
+                    />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="#f4f4f3"
+                    >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Punto: "
+                        android:textSize="20dp"
+                        android:textColor="#3f3f40"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginLeft="15dp"
+                        android:textStyle="bold"
+                        />
+
+                    <TextView
+                        android:id="@+id/idPunto"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="30.0"
+                        android:textSize="18dp"
+                        android:textColor="#3f3f40"
+                        android:layout_marginTop="1dp"
+                        android:layout_marginLeft="15dp"
+                        android:textStyle="bold"
+                        />
+
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Ubicacion: "
+                        android:textColor="#3f3f40"
+                        android:textSize="20dp"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginLeft="15dp"
+                        android:textStyle="bold"
+                        />
+
+                    <TextView
+                        android:id="@+id/idUbica"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginTop="1dp"
+                        android:text="Zona 1 Pasillo A"
+                        android:textColor="#3f3f40"
+                        android:textSize="18dp"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/idSurtir"
+                        android:layout_width="150dp"
+                        android:layout_height="55dp"
+                        android:layout_marginTop="15dp"
+                        android:background="@drawable/btn_buscar"
+                        android:layout_marginLeft="10dp"
+                        android:textColor="#ffff"
+                        android:text="Surtir"
+                        />
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="0dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="20dp"
+                    android:text="Marca:"
+                    android:textColor="#3f3f40"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginLeft="15dp"
+                    android:textStyle="bold"
+                    />
+                <TextView
+                    android:id="@+id/idMarca"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:text="GEOX"
+                    android:textSize="18dp"
+                    android:textColor="#3f3f40"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginLeft="15dp"
+                    android:textStyle="bold"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="20dp"
+                    android:text="ACABADO:"
+                    android:textColor="#3f3f40"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginLeft="15dp"
+                    android:textStyle="bold"
+                    />
+
+                <TextView
+                    android:id="@+id/idAcabadoo"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="1dp"
+                    android:text="Gabardina"
+                    android:textColor="#3f3f40"
+                    android:textSize="18dp"
+                    android:textStyle="bold" />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+
+
+                </LinearLayout>
+                <TextView
+                    android:id="@+id/id"
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:text="Color:"
+                    android:textSize="20dp"
+                    android:textColor="#f4f4f3"
+                    android:layout_marginTop="15dp"
+                    android:background="#f4f4f3"
+                    android:layout_marginLeft="15dp"
+                    android:textStyle="bold"
+                    />
+                <TextView
+                    android:id="@+id/idBar"
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:text="Color:"
+                    android:textSize="20dp"
+                    android:textColor="#f4f4f3"
+                    android:background="#f4f4f3"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginLeft="15dp"
+                    android:textStyle="bold"
+                    />
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:background="#f4f4f3"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Color:"
+                    android:textSize="20dp"
+                    android:textColor="#3f3f40"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginLeft="15dp"
+                    android:textStyle="bold"
+                    />
+                <TextView
+                    android:id="@+id/idColor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="GEOX NAVY"
+                    android:textSize="18dp"
+                    android:textColor="#3f3f40"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginLeft="15dp"
+                    android:textStyle="bold"
+                    />
+
+
+                <TextView
+                    android:id="@+id/idLlave"
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:text="Color:"
+                    android:textSize="20dp"
+                    android:textColor="#f4f4f3"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginLeft="15dp"
+                    android:textStyle="bold"
+                    />
+            </LinearLayout>
+
+
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:layout_marginTop="5dp"
+            android:background="#004d73"
+            />
+
+    </LinearLayout>
+</android.support.constraint.ConstraintLayout>

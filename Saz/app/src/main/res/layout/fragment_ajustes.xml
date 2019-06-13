@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Ajustes"
+    android:background="#f4f4f3"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_marginTop="20dp"
+        >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
+
+        <Button
+            android:id="@+id/btnAreaR"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="ABC ÁREAS"
+            android:layout_marginTop="5dp"
+            android:textColor="#ffff"
+            android:textSize="20dp"
+            android:background="@drawable/btn_buscar"
+            />
+
+    <Button
+            android:id="@+id/idaltaArea"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="ABC ZONAS"
+
+            android:layout_marginTop="10dp"
+        android:textSize="20dp"
+            android:textColor="#ffff"
+            android:background="@drawable/btn_azul"
+            />
+
+
+
+        <Button
+            android:id="@+id/altaProducto"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="Ubicar Producto"
+
+            android:layout_marginTop="10dp"
+            android:textSize="20dp"
+            android:textColor="#ffff"
+            android:background="@drawable/btn_buscar"
+            />
+
+
+
+        <Button
+            android:id="@+id/btnConfiguraciones"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="Configurar consulta y similares"
+            android:layout_marginTop="10dp"
+            android:textColor="#ffff"
+            android:textSize="20dp"
+            android:background="@drawable/btn_azul"
+            />
+
+
+    </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+
+        </LinearLayout>
+
+
+
+
+
+    </LinearLayout>
+
+        <TextView
+            android:layout_marginTop="80dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#004d73"
+            />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ajustados"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="20dp"
+            android:layout_gravity="center"
+            />
+        <TextView
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#004d73"
+            />
+
+    </LinearLayout>
+
+
+
+</FrameLayout>

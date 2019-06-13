@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Configuraciones">
+
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+
+            >
+
+
+
+            <CheckBox
+                android:layout_marginTop="50dp"
+                android:id="@+id/CheckBusqueda"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Buscar sin color y acabado"
+                android:textSize="18dp"
+                android:layout_marginLeft="20dp"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="--Criterios a enlazar para ofrecer un estilo similar--"
+                android:textSize="18dp"
+                android:textColor="#000000"
+                android:gravity="center"
+                android:layout_marginTop="15dp"
+
+                />
+
+
+
+
+            <CheckBox
+                android:layout_marginTop="10dp"
+                android:id="@+id/CheckMarca"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Marca"
+                android:textSize="18dp"
+                android:layout_marginLeft="20dp"
+                />
+
+
+
+
+
+
+            <CheckBox
+                android:layout_marginTop="10dp"
+                android:id="@+id/CheckTemporada"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Temporada"
+                android:textSize="18dp"
+                android:layout_marginLeft="20dp"
+                />
+
+
+            <CheckBox
+                android:layout_marginTop="10dp"
+                android:id="@+id/CheckClas"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Clasificacion"
+                android:textSize="18dp"
+                android:layout_marginLeft="20dp"
+                />
+
+
+            <CheckBox
+                android:layout_marginTop="10dp"
+                android:id="@+id/CheckSubLinea"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SubLinea"
+                android:textSize="18dp"
+                android:layout_marginLeft="20dp"
+                />
+
+
+            <CheckBox
+                android:layout_marginTop="10dp"
+                android:id="@+id/CheckSuela"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Suela"
+                android:textSize="18dp"
+                android:layout_marginLeft="20dp"
+                />
+
+
+            <CheckBox
+                android:layout_marginTop="10dp"
+                android:id="@+id/CheckTacón"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tacón"
+                android:textSize="18dp"
+                android:layout_marginLeft="20dp"
+                />
+
+
+            <CheckBox
+                android:layout_marginTop="10dp"
+                android:id="@+id/CheckColor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Color"
+                android:textSize="18dp"
+                android:layout_marginLeft="20dp"
+                />
+
+
+            <CheckBox
+                android:layout_marginTop="10dp"
+                android:id="@+id/CheckAcabado"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Acabado"
+                android:textSize="18dp"
+                android:layout_marginLeft="20dp"
+                />
+
+            <CheckBox
+                android:layout_marginTop="10dp"
+                android:id="@+id/CheckCorrida"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Corrida"
+                android:textSize="18dp"
+                android:layout_marginLeft="20dp"
+                />
+
+
+
+
+
+
+
+            <Button
+                android:id="@+id/btnGuardar"
+                android:layout_marginTop="30dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Guardar Configuración"
+                android:textSize="20dp"
+                android:textColor="#ffffff"
+                android:background="@drawable/btn_buscar"
+
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
+</android.support.constraint.ConstraintLayout>

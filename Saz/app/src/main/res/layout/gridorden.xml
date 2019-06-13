@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/EstiloViews"
+            android:layout_width="120dp"
+            android:textColor="#cf0209"
+            android:textStyle="bold"
+            android:layout_height="wrap_content"
+            android:textSize="14dp"
+            android:text="qwerty"
+            android:layout_marginLeft="10dp"
+            />
+        <TextView
+            android:id="@+id/MarcaViews"
+            android:textColor="#cf0209"
+            android:textStyle="bold"
+            android:layout_width="44dp"
+            android:textSize="14dp"
+            android:layout_height="wrap_content"
+            android:text="qwerty"
+            android:layout_marginLeft="20dp"
+            />
+        <TextView
+            android:id="@+id/ColorViews"
+            android:textColor="#cf0209"
+            android:textStyle="bold"
+            android:layout_width="60dp"
+            android:textSize="14dp"
+            android:layout_height="wrap_content"
+            android:text="qwerty"
+            android:layout_marginLeft="25dp"
+            />
+        <TextView
+            android:id="@+id/PuntoViews"
+            android:textSize="14dp"
+            android:layout_width="45dp"
+            android:textColor="#cf0209"
+            android:textStyle="bold"
+            android:layout_height="wrap_content"
+            android:text="25.0"
+            android:layout_marginLeft="17dp"
+            />
+        <TextView
+            android:id="@+id/CantidadViews"
+            android:textSize="14dp"
+            android:layout_width="20dp"
+            android:layout_height="wrap_content"
+            android:textColor="#cf0209"
+            android:textStyle="bold"
+            android:text="4"
+            android:layout_marginLeft="5dp"
+            />
+
+
+    </LinearLayout>
+</LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

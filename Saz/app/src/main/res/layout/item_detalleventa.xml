@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#f4f4f3"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="#f4f4f3"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="#f4f4f3"
+            >
+
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:text="Estilo"
+                android:textSize="25dp"
+                android:layout_marginLeft="20dp"
+                android:textColor="#3f3f40"
+                />
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:text="Color"
+                android:textSize="25dp"
+                android:textColor="#3f3f40"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="#f4f4f3"
+            >
+
+            <TextView
+                android:id="@+id/txtEstilo"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:text="Estilo"
+                android:textSize="25dp"
+                android:layout_marginLeft="20dp"
+                android:textColor="#3f3f40"
+                />
+            <TextView
+                android:id="@+id/txtColor"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:text="Color"
+                android:textSize="25dp"
+                android:textColor="#3f3f40"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="20dp"
+            android:background="#f4f4f3"
+
+            >
+
+            <TextView
+
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:text="Marca"
+                android:textSize="25dp"
+                android:layout_marginLeft="20dp"
+                android:textColor="#3f3f40"
+
+                />
+            <TextView
+
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:text="Acabado"
+                android:textSize="25dp"
+                android:textColor="#3f3f40"
+
+                />
+            <TextView
+
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:text="Punto"
+                android:textSize="25dp"
+                android:layout_marginLeft="30dp"
+                android:textColor="#3f3f40"
+                />
+
+
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="#f4f4f3"
+
+            >
+
+            <TextView
+                android:id="@+id/txtMarca"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:text="Marca"
+                android:textSize="25dp"
+                android:layout_marginLeft="20dp"
+                android:textColor="#3f3f40"
+
+                />
+            <TextView
+                android:id="@+id/txtAcabado"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:text="Acabado"
+                android:textSize="25dp"
+                android:textColor="#3f3f40"
+
+                />
+            <TextView
+                android:id="@+id/txtPunto"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:text="Punto"
+                android:textSize="25dp"
+                android:layout_marginLeft="30dp"
+                android:textColor="#3f3f40"
+                />
+
+
+
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnRechazar"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:textSize="30dp"
+            android:text="Rechazar"
+            android:background="@drawable/btn_buscar"
+            android:textColor="#ffff" />
+        <TextView
+            android:id="@+id/txtLlave"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="25dp"
+            android:layout_marginLeft="30dp"
+            android:textColor="#f4f4f3"
+            />
+
+        <LinearLayout
+            android:layout_width="1000dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+
+            <TextView
+                android:layout_width="1000dp"
+                android:layout_height="10dp"
+                android:layout_marginTop="10dp"
+                android:background="#004d73"
+                />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

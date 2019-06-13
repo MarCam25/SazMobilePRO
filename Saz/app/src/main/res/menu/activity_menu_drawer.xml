@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_camera"
+            android:icon="@drawable/inventario"
+            android:backgroundTint="#000000"
+            android:title="Pedidos" />
+        <item
+            android:id="@+id/generales"
+            android:icon="@drawable/existenciasge"
+            android:backgroundTint="#000000"
+            android:title="Configuración" />
+        <item
+            android:id="@+id/nav_vender"
+            android:icon="@drawable/vender"
+            android:backgroundTint="#000000"
+            android:title="Vender" />
+        <item
+            android:id="@+id/nav_manage"
+            android:icon="@drawable/comanda"
+            android:backgroundTint="#000000"
+            android:title="Comandero" />
+
+        <item
+            android:id="@+id/nav_new"
+            android:title="Agregar empleado"
+            android:icon="@drawable/adduser"
+            />
+
+
+        <item
+            android:id="@+id/nav_cerrar"
+            android:backgroundTint="#000000"
+            android:icon="@drawable/cerrar"
+            android:title="Cerrar Sesión" />
+    </group>
+
+    <item android:title="">
+        <menu>
+            <item
+                android:id="@+id/nav_share"
+
+                android:title="" />
+            <item
+                android:id="@+id/nav_send"
+
+                android:title="" />
+        </menu>
+    </item>
+
+</menu>
