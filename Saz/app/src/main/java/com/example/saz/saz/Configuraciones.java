@@ -24,15 +24,14 @@ public class Configuraciones extends AppCompatActivity {
 
 
 
-    Config config=new Config();
 
     Button guardar;
 
-    int iva=0, buscador=0;
+    int  buscador=0;
 
     CheckBox checkMarca, checkTemporada, checkClasificacion, checkSubLinea, checkSuela, checkTacon, checkColor, checkAcabado, checkCorrida;
 
-    EditText edtPorcentaje;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +44,6 @@ public class Configuraciones extends AppCompatActivity {
         checkTemporada=(CheckBox)findViewById(R.id.CheckTemporada);
         checkClasificacion=(CheckBox)findViewById(R.id.CheckClas);
         checkSubLinea=(CheckBox)findViewById(R.id.CheckSubLinea);
-        checkSubLinea=(CheckBox)findViewById(R.id.CheckSuela);
         checkSuela=(CheckBox)findViewById(R.id.CheckSuela);
         checkTacon=(CheckBox)findViewById(R.id.CheckTacón);
         checkColor=(CheckBox)findViewById(R.id.CheckColor);
@@ -63,11 +61,13 @@ public class Configuraciones extends AppCompatActivity {
         }
 
 
+
         guardar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dropCheckBuscador();
 
+                deleteSimilares();
 
                 if(CheckBusqueda.isChecked() == true){
                     insertCheckBuscador();
@@ -388,6 +388,16 @@ public class Configuraciones extends AppCompatActivity {
 
 
 
+
+    }
+
+
+    public void deleteSimilares(){
+        ConexionSQLiteHelper conn = new ConexionSQLiteHelper(this, "db tienda", null, 1);
+        SQLiteDatabase db = conn.getWritableDatabase();
+
+        String sql="DELETE FROM "+ Utilidades.TABLA_SIMILAR;
+        db.execSQL(sql );
 
     }
 

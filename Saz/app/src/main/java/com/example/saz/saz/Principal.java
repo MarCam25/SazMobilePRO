@@ -65,16 +65,16 @@ CheckBox check;
         public static int  escan=0;
     int filas=0;
 
-    public static boolean zonaPass=false;
 
-    Calendar calendar = Calendar.getInstance();
+
+
     String nombreUsuario;
         ModeloEmpresa me;
         ModeloUsuario mu;
     String fechaContrato;
     String fechaHoy;
     Boolean membrecia=false;
-        sas ss=new sas();
+
         ConexionSqlServer conex=new ConexionSqlServer();
     ConexionBDCliente bdc=new ConexionBDCliente();
     @Override

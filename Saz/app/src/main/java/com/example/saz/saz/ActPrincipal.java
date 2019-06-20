@@ -42,7 +42,7 @@ public class ActPrincipal extends AppCompatActivity {
     ModeloEmpresa me=new ModeloEmpresa();
     ConexionBDCliente bdc=new ConexionBDCliente();
     Button acep;
-    ModeloDatos md=new ModeloDatos();
+
     CheckBox check;
     ArrayList listaTiendas=new ArrayList();
     ArrayList listaTipo=new ArrayList();
@@ -52,7 +52,7 @@ public class ActPrincipal extends AppCompatActivity {
     public String numeroTienda;
     private Spinner spTiendas, spZona,spTipo;
     ConexionSQLiteHelper conn=new ConexionSQLiteHelper(this,"db tienda",null,1);
-    String repetido;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

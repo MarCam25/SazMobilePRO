@@ -103,16 +103,17 @@ public class AdapterResumen extends RecyclerView.Adapter<AdapterResumen.ViewHold
         holder.btnMenos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                consultarCantidadReal(holder);
                 try {
+                    int cantidades=Integer.parseInt(holder.cant.getText().toString());
 
-                    if(Integer.parseInt(holder.cant.getText().toString())!=0 || Integer.parseInt(holder.cant.getText().toString())!=1 ) {
+                    if(cantidades!=0 && cantidades>1) {
                         int cantidad = Integer.parseInt(holder.cant.getText().toString());
-                        if(Integer.parseInt(holder.cant.getText().toString())>1) {
-
+                        if(Integer.parseInt(holder.cant.getText().toString())>=1) {
+                            double precioUnidad=(Double.parseDouble(holder.total.getText().toString())/cantidad);
                             cantidad--;
                             holder.cant.setText(String.valueOf(cantidad));
-                            double precio = Double.parseDouble(holder.total.getText().toString()) - Double.parseDouble(holder.sub.getText().toString());
+                            double precio = Double.parseDouble(holder.total.getText().toString()) - precioUnidad;
                             holder.total.setText(String.valueOf(precio));
                             upDate(holder, cantidad, precio);
                             upDateExistenciasMenos(holder);
@@ -120,9 +121,9 @@ public class AdapterResumen extends RecyclerView.Adapter<AdapterResumen.ViewHold
                         }
                     }
                 }catch(Exception e){
+                    e.getMessage();
                     Toast.makeText(context, "error No.2_resumen ", Toast.LENGTH_SHORT).show();
                 }
-
             }
         });
 
@@ -130,18 +131,22 @@ public class AdapterResumen extends RecyclerView.Adapter<AdapterResumen.ViewHold
         holder.btnMas.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                consultarCantidadReal(holder);
                 int cantidad=Integer.parseInt(holder.cant.getText().toString());
                 try {
-                    existenciasEnMiTienda(holder);
+
                     if(existencias>0) {
 
+                        double precioUnidad=(Double.parseDouble(holder.total.getText().toString())/cantidad);
                         cantidad++;
                         holder.cant.setText(String.valueOf(cantidad));
-                        double precio=Double.parseDouble(holder.total.getText().toString())+Double.parseDouble(holder.sub.getText().toString());
+
+                        double  precio=Double.parseDouble(holder.total.getText().toString())+precioUnidad;
                         holder.total.setText(String.valueOf(precio));
                         upDate(holder,cantidad,precio);
                         upDateExistencias(holder);
+
+
 
 
                     }else{
@@ -155,6 +160,7 @@ public class AdapterResumen extends RecyclerView.Adapter<AdapterResumen.ViewHold
 
 
                 }catch(Exception e){
+                    e.getMessage();
                     Toast.makeText(context, "error No.1_resumen ", Toast.LENGTH_SHORT).show();
                 }
 
@@ -273,7 +279,7 @@ public class AdapterResumen extends RecyclerView.Adapter<AdapterResumen.ViewHold
 
     }
 
-    public void existenciasEnMiTienda(final ViewHolderResumen holder){
+    public void existenciasEnMiTienda(final ViewHolderResumen holder,int real){
 
 
         try {
@@ -288,7 +294,7 @@ public class AdapterResumen extends RecyclerView.Adapter<AdapterResumen.ViewHold
             while(rs.next()) {
 
 
-                existencias=(rs.getInt(2));
+                existencias=(rs.getInt(2)-real);
 
 
 
@@ -363,6 +369,27 @@ public void eliminar(final ViewHolderResumen holder){
     }
 
 
+    public void consultarCantidadReal(final  ViewHolderResumen holder){
+        int real=0;
+        try {
+
+
+            Statement st = bdc.conexionBD(me.getServer(),me.getBase(),me.getUsuario(),me.getPass()).createStatement();
+            String sql="SELECT (isnull(cantreal,0))   FROM existen WHERE barcode='"+holder.bar.getText()+ "' and talla="+holder.punto.getText()+" and tienda="+ultimaVez();
+            ResultSet rs = st.executeQuery(sql);
+            ResultSetMetaData rsmd=rs.getMetaData();
+            while(rs.next()) {
+                real =rs.getInt(1);
+
+            }
+
+
+        } catch (SQLException e1) {
+
+        }
+        existenciasEnMiTienda(holder,real);
+
+    }
 
 
 

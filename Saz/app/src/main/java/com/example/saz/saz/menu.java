@@ -57,7 +57,7 @@ public class menu extends AppCompatActivity
 
     String usuario, numeroUsuario, nombreUsuario;
 ModeloUsuario mu=new ModeloUsuario();
-    String empresa,listalista;
+    String empresa;
     private TimerTask tarea;
     String nombreTieda;
 
@@ -73,15 +73,14 @@ ModeloTienda mt=new ModeloTienda();
     ModeloEmpresa me=new ModeloEmpresa();
     ConexionBDCliente bdc=new ConexionBDCliente();
     TextView idTienda;
-    ArrayList listaTiendas=new ArrayList();
+
     static Timer temporizadorComandero;
     private Handler handler = new Handler();
     String areaID = null;
     int tipo=0;
 
 
-ModeloDatos md=new ModeloDatos();
-    FragmentManager fmp=getSupportFragmentManager();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,7 +124,7 @@ ModeloDatos md=new ModeloDatos();
 
 
 
-        getSupportActionBar().setTitle("Saz Mobile APP -Inicio-");
+        getSupportActionBar().setTitle("Saz Mobile APP -Inicio- ");
 
         if(Principal.location==1){
             getSupportActionBar().setTitle("Comandero");
@@ -351,9 +350,13 @@ ModeloDatos md=new ModeloDatos();
 
 
                             if(tipo==2) {
-                                consultarProductosComandero();
+                                if(tipo==2) {
+                                    consultarProductosComandero();
+                                }
                             }else if(tipo==1){
-                                consultarProductosVendedor();
+                                if(tipo==1) {
+                                    consultarProductosVendedor();
+                                }
                             }
 
 
@@ -518,10 +521,12 @@ ModeloDatos md=new ModeloDatos();
 
 
     public void getNotificacion(int cont) {
+        Principal.location = 1;
         notification("Nuevos pedidos", "Tienes  "+cont+" Productos por surtir ", getApplicationContext());
     }
 
     public void getNotificacionVendedor(int cont) {
+        Principal.location = 2;
         notification("Productos Surtidos", "Tienes  "+cont+" Productos surtidos ", getApplicationContext());
     }
     public void notification(String title, String message, Context context) {
@@ -550,7 +555,7 @@ ModeloDatos md=new ModeloDatos();
 
 
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
-        Principal.location = 1;
+
         stackBuilder.addNextIntent(new Intent(context, menu.class));
         PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(resultPendingIntent);

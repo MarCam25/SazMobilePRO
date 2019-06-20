@@ -61,7 +61,7 @@ public class AltaDeProducto extends AppCompatActivity {
 
 
     public static boolean not=false;
-    public static boolean vuelta=false;
+
     GridView gridview;
 
 
@@ -128,8 +128,6 @@ public class AltaDeProducto extends AppCompatActivity {
     TextView pagina, basico, comprador, departamento, tacon, plantilla, forro, clasificacion, corrida, suela, ubicacion, ubicaTXT;
 
 
-    TextView encabezado;
-
     public static String listado;
 
     RecyclerView recycler;
@@ -139,7 +137,6 @@ public class AltaDeProducto extends AppCompatActivity {
 
 
     ModeloUsuario mu=new ModeloUsuario();
-    ModeloDatos md=new ModeloDatos();
     String NombreUsuario;
 
 
@@ -451,6 +448,8 @@ public class AltaDeProducto extends AppCompatActivity {
                 //   llenarExistencias();
 
                     llenarTabla();
+                    listaZon.clear();
+                    spZonas.setAdapter(null);
                     mostrarZonas();
                     ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(),R.layout.spinner_item, listaZon);
                     spZonas.setAdapter(adapter);

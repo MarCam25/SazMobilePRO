@@ -80,7 +80,6 @@ public class ConsultaF extends Fragment {
     String idImagen;
     static Context context;
     String ubica;
-    private ZXingScannerView vistaescaner;
 
     int  buscador=0;
 
@@ -93,7 +92,7 @@ public class ConsultaF extends Fragment {
     double auxiliarDes;
 
     Button btnDetalle, btnMas, btnMenos, btnAgregar,btnResumen,btnFinalizar;
-    static Double puntoBar, puntoCont;
+    static Double puntoBar;
     public static ModeloEmpresa me=new ModeloEmpresa();
     public static ConexionBDCliente bdc=new ConexionBDCliente();
     ConexionSqlServer conex=new ConexionSqlServer();
@@ -102,16 +101,14 @@ public class ConsultaF extends Fragment {
     public static String VarEstilo;
     static String clint, BarCodeFIN="";
     static  String estiloBar="";
-    TextView edtCodigo;
     String variableS,descuento;
+    String where=" where ";
 
     String fechaUlti, horaUlti;
 
     public static ArrayList lista=new ArrayList();
     ArrayList listaAcabado=new ArrayList();
     static String CodigoBar="";
-    String[] validador;
-    String contVal;
     ArrayList listaMarca=new ArrayList();
     ArrayList listaCorrida=new ArrayList();
     static ArrayList puntos=new ArrayList();
@@ -119,57 +116,42 @@ public class ConsultaF extends Fragment {
     TextView idPedido;
     boolean xcaner=false;
     ModeloTienda mt=new ModeloTienda();
-    String[] cantVal;
-    String contCant;
 
-    ArrayList listaTiendas=new ArrayList();
-    private String numeroTienda;
+
+
     long time =System.currentTimeMillis();
     String barcode;
-    String estiloTem,puntoTem,precioTem, cantidadTem;
     boolean detallePass=false;
     TextView precioTXT;
     int index=0;
     Button btnBardoce;
     double tot;
-    String user, scaneado;
+    String user;
     static String sku;
     String intentResummen;
     public static double pre = 0, contenedor;
     public static int   existencias;
     String point;
     public static Spinner spColor,spAcabado, spMarca, spCorrida, punto;
-    String num, str,mar;
     public static TextView existenciasTXT, cantidadTXT, unidadesTXT, importeTXT,descuentoTXT,totalTXT;
 
     public static EditText sp2;
     static TextView clienteTXT;
-    TextView tiendaTxt,puntoTxt,totalTxt,dato1Txt,dato2Txt,dato3Txt;
     double r;
     static String in, finn, inc;
     String estilo, color, acabado, marcas, linea, sublinea, temporada, descripcion, observaciones;
     TextView  pagina, basico, comprador, departamento, tacon, plantilla, forro, clasificacion, corrida, suela, ubicacion;
 
-    Toolbar myToolbar;
-    ArrayList<String> listaDatos;
-    String fecha;
     double precio=0.0;
-    TextView encabezado;
-    String ide;
-    public static String listado;
-    ArrayList<String> listaDatos2;
-    RecyclerView recycler;
-    java.sql.Timestamp timestamp=new java.sql.Timestamp(time);
-    String fechaDet;
-    static String idFecha;
-    String NumeroColor;
 
+    public static String listado;
+    RecyclerView recycler;
+    static String idFecha;
     ModeloUsuario mu=new ModeloUsuario();
     ModeloDatos md=new ModeloDatos();
     String NombreUsuario;
     static DatosLupita dl=new DatosLupita();
     View root;
-    Double precioPedido;
     Button btnSimilar , btnOtras;
 
   static  String idColor=null,idAcabado=null,idMarca=null,idCorrida=null;
@@ -401,7 +383,9 @@ listado=mt.getNombreTienda();
                             obtenerRegistrosSQLite();
                             Finalizare();
                             cantidadTXT.setText("0");
-
+                            Toast toast = Toast.makeText(getActivity(), "Producto agregado", Toast.LENGTH_LONG);
+                            TextView x = (TextView) toast.getView().findViewById(android.R.id.message);
+                            x.setTextColor(Color.YELLOW); toast.show();
 
                         }
 
@@ -575,88 +559,93 @@ listado=mt.getNombreTienda();
                 if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
                         (keyCode == KeyEvent.KEYCODE_ENTER)) {
 
-                    Toast toast = Toast.makeText(getActivity(), "CARGANDO....", Toast.LENGTH_LONG);
-                    TextView x = (TextView) toast.getView().findViewById(android.R.id.message);
-                    x.setTextColor(Color.YELLOW); toast.show();
-
-
 
                     buscador=0;
-
+                    detallePass=true;
                     buscador();
 
 
                     limpiarListas();
-                    limpiarCaja();
+                    limpiarCajas();
                     ReinicarContadores();
 
+                    Toast gif =new  Toast(getActivity());
+                    pl.droidsonroids.gif.GifImageView view=new  pl.droidsonroids.gif.GifImageView(getActivity());
+                    view.setImageResource(R.drawable.loading);
+                    gif.setView(view);
+                    gif.show();
 
+                    Toast toaste =new  Toast(getActivity());
+                    pl.droidsonroids.gif.GifImageView viewe=new  pl.droidsonroids.gif.GifImageView(getActivity());
+                    view.setImageResource(R.drawable.loading);
+                    toaste.setView(view);
+                    toaste.show();
 
-
+                    Toast toast = Toast.makeText(getActivity(), "Cargando...", Toast.LENGTH_LONG);
+                    TextView x = (TextView) toast.getView().findViewById(android.R.id.message);
+                    x.setTextColor(Color.YELLOW); toast.show();
 
                     puntos.clear();
-                   mismoDispositivo();
+                    mismoDispositivo();
+
 
                     punto.setAdapter(null);
 
-
                     contarSp();
-                    if(Principal.scannPass==true && buscador==0){
+                    if(colorCantidad>0) {
+                        if (Principal.scannPass == true ) {
+                            llenarSp();
+                            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.spinner_item, lista);
+                            spColor.setAdapter(adapter);
+                            spColor.setSelection(obtenerPosicionItem(spColor, colorBar));
+                        } else if (Principal.scannPass == false && colorCantidad == 1 && buscador == 0) {
+                            llenarSp();
+                            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.spinner_item, lista);
+                            spColor.setAdapter(adapter);
+                            spColor.setSelection(1);
+
+
+                        } else if (Principal.scannPass == false && colorCantidad > 1 && buscador == 0) {
+                            llenarSp();
+                            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.spinner_item, lista);
+                            spColor.setAdapter(adapter);
+
+                        } else if (buscador == 1 && Principal.scannPass==false) {
+                            buscarMarcas();
+
+                            if (marcaCantidad == 1) {
+
+
+                                ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.spinner_item, listaMarca);
+                              /*  spinnerDialog=new SpinnerDialog(getActivity(),listaMarca,"Selecciona marca ","ok");// With 	Animation
+                                spinnerDialog.setCancellable(true); // for cancellable
+                                spinnerDialog.setShowKeyboard(false); */
+                                spMarca.setAdapter(adapter);
+                                spMarca.setSelection(1);
 
 
 
-                        llenarSp();
-                        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),R.layout.spinner_item, lista);
-                        spColor.setAdapter(adapter);
-                        spColor.setSelection(obtenerPosicionItem(spColor,colorBar));
-                        detallePass=true;
-                    }else if(Principal.scannPass==false && colorCantidad==1 && buscador==0){
-                        llenarSp();
-                        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),R.layout.spinner_item, lista);
-                        spColor.setAdapter(adapter);
-                        spColor.setSelection(1);
-                        detallePass=true;
+                            } else if (marcaCantidad > 1) {
 
-                    }else if(Principal.scannPass==false && colorCantidad>1 && buscador==0){
-                        llenarSp();
-                        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),R.layout.spinner_item, lista);
-                        spColor.setAdapter(adapter);
-                        detallePass=true;
+                                ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.spinner_item, listaMarca);
+                                spMarca.setAdapter(adapter);
 
-                   }else if(buscador==1){
-                        buscarMarcas();
+/*
+                                spinnerDialog=new SpinnerDialog(getActivity(),listaMarca,"Seleccione marca","ok");// With 	Animation
+                                spinnerDialog.setCancellable(true); // for cancellable
+                                spinnerDialog.setShowKeyboard(false);*/
 
-                        if( marcaCantidad==1 ){
+                            }
 
-                            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),R.layout.spinner_item, listaMarca);
-                            spMarca.setAdapter(adapter);
-                            spMarca.setSelection(1);
-                            detallePass=true;
+                        } else if (Principal.scannPass == false && buscador == 0) {
+                            llenarSp();
+                            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.spinner_item, lista);
+                            spColor.setAdapter(adapter);
 
-                        }else if( marcaCantidad>1){
-
-                            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),R.layout.spinner_item, listaMarca);
-                            spMarca.setAdapter(adapter);
-                            detallePass=true;
                         }
-
-
-                    }else if(Principal.scannPass==false && buscador==0){
-                        llenarSp();
-                        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),R.layout.spinner_item, lista);
-                        spColor.setAdapter(adapter);
-                        spColor.setSelection(1);
-                        detallePass=true;
-                    }else if(Principal.scannPass=true && buscador==1){
-                        buscarMarcas();
-
-                        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),R.layout.spinner_item, listaMarca);
-                        spMarca.setAdapter(adapter);
-                        spMarca.setSelection(obtenerPosicionItem(spMarca,marcaBar));
-                        detallePass=true;
-
+                    }else{
+                        Toast.makeText(getActivity(),"Estilo no valido",Toast.LENGTH_LONG).show();
                     }
-
 
 
                     return true;
@@ -672,12 +661,9 @@ listado=mt.getNombreTienda();
             spColor.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-
-                    Toast toast = Toast.makeText(getActivity(), "CARGANDO....", Toast.LENGTH_LONG);
+                    Toast toast = Toast.makeText(getActivity(), "Cargando...", Toast.LENGTH_LONG);
                     TextView x = (TextView) toast.getView().findViewById(android.R.id.message);
                     x.setTextColor(Color.YELLOW); toast.show();
-
                     listaAcabado.clear();
                     listaMarca.clear();
                     listaCorrida.clear();
@@ -692,6 +678,7 @@ listado=mt.getNombreTienda();
                     spAcabado.setAdapter(null);
                     listaAcabado.clear();
 
+
                     contarSp3();
 
                     if(Principal.scannPass==true){
@@ -699,19 +686,23 @@ listado=mt.getNombreTienda();
                         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),R.layout.spinner_item, listaAcabado);
                         spAcabado.setAdapter(adapter);
                         spAcabado.setSelection(obtenerPosicionItem(spAcabado,acabadoBar));
+
                     }else if(Principal.scannPass==false && acabadoCantidad==1){
                         llenarSp3();
                         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),R.layout.spinner_item, listaAcabado);
                         spAcabado.setAdapter(adapter);
                         spAcabado.setSelection(1);
 
+
+
                     }else if(Principal.scannPass==false && acabadoCantidad>1){
                         llenarSp3();
                         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),R.layout.spinner_item, listaAcabado);
                         spAcabado.setAdapter(adapter);
 
-                    }
 
+
+                    }
                 }
 
                 @Override
@@ -723,10 +714,6 @@ listado=mt.getNombreTienda();
         spAcabado.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-                Toast toast = Toast.makeText(getActivity(), "CARGANDO....", Toast.LENGTH_LONG);
-                TextView x = (TextView) toast.getView().findViewById(android.R.id.message);
-                x.setTextColor(Color.YELLOW); toast.show();
                 listaMarca.clear();
                 listaCorrida.clear();
                 puntos.clear();
@@ -769,54 +756,69 @@ listado=mt.getNombreTienda();
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-                Toast toast = Toast.makeText(getActivity(), "CARGANDO....", Toast.LENGTH_LONG);
-                TextView x = (TextView) toast.getView().findViewById(android.R.id.message);
-                x.setTextColor(Color.YELLOW); toast.show();
+                try {
+                    Toast toast = Toast.makeText(getActivity(), "Cargando...", Toast.LENGTH_LONG);
+                    TextView x = (TextView) toast.getView().findViewById(android.R.id.message);
+                    x.setTextColor(Color.YELLOW);
+                    toast.show();
 
 
-                spCorrida.setAdapter(null);
-                punto.setAdapter(null);
-                listaCorrida.clear();
-                puntos.clear();
-                limpiarCajas();
-                ReinicarContadores();
-                spCorrida.setAdapter(null);
-                listaCorrida.clear();
+                    spCorrida.setAdapter(null);
+                    punto.setAdapter(null);
+                    listaCorrida.clear();
+                    puntos.clear();
+                    limpiarCajas();
+                    ReinicarContadores();
+                    spCorrida.setAdapter(null);
+                    listaCorrida.clear();
+
+
+                    contarSp5();
+                    if (Principal.scannPass == true && buscador == 0) {
+                        llenarSp5();
+                        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.spinner_item, listaCorrida);
+                        spCorrida.setAdapter(adapter);
+                        spCorrida.setSelection(obtenerPosicionItem(spCorrida, corridaBar));
+                    } else if (Principal.scannPass == false && corridaCantidad == 1 && buscador == 0) {
+                        llenarSp5();
+                        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.spinner_item, listaCorrida);
+                        spCorrida.setAdapter(adapter);
+                        spCorrida.setSelection(1);
+
+                    } else if (Principal.scannPass == false && corridaCantidad > 1 && buscador == 0) {
+                        llenarSp5();
+                        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.spinner_item, listaCorrida);
+                        spCorrida.setAdapter(adapter);
+
+                    } else if (buscador == 1 && Principal.scannPass==false) {
+                        llenarSp5();
+                        obtenerCorrida();
+                        if(corridaCantidad==1){
+                            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.spinner_item, listaCorrida);
+                            spCorrida.setAdapter(adapter);
+                            spCorrida.setSelection(1);
+                        }else if(corridaCantidad>1){
+                            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.spinner_item, listaCorrida);
+                            spCorrida.setAdapter(adapter);
+                        }
+
+                    } else if (Principal.scannPass == false && buscador == 0) {
+                        llenarSp5();
+                        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.spinner_item, listaCorrida);
+                        spCorrida.setAdapter(adapter);
+
+                    }else if (buscador == 1 && Principal.scannPass==true) {
+                        llenarSp5();
+                        obtenerCorrida();
+
+                        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.spinner_item, listaCorrida);
+                        spCorrida.setAdapter(adapter);
+                        spCorrida.setSelection(obtenerPosicionItem(spCorrida, corridaBar));
 
 
 
-                contarSp5();
-                if(Principal.scannPass==true && buscador==0){
-                    llenarSp5();
-                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),R.layout.spinner_item, listaCorrida);
-                    spCorrida.setAdapter(adapter);
-                    spCorrida.setSelection(obtenerPosicionItem(spCorrida,corridaBar));
-                }else if(Principal.scannPass==false && corridaCantidad==1 && buscador==0){
-                    llenarSp5();
-                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),R.layout.spinner_item, listaCorrida);
-                    spCorrida.setAdapter(adapter);
-                    spCorrida.setSelection(1);
-
-                }else if(Principal.scannPass==false && corridaCantidad>1 && buscador==0){
-                    llenarSp5();
-                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),R.layout.spinner_item, listaCorrida);
-                    spCorrida.setAdapter(adapter);
-
-                }else if(buscador==1){
-
-                    obtenerCorrida();
-                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),R.layout.spinner_item, listaCorrida);
-                    spCorrida.setAdapter(adapter);
-                }else if(Principal.scannPass==false && buscador==0){
-                    llenarSp5();
-                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),R.layout.spinner_item, listaCorrida);
-                    spCorrida.setAdapter(adapter);
-
-                }else if(Principal.scannPass==true && buscador==1){
-                    obtenerCorrida();
-                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),R.layout.spinner_item, listaCorrida);
-                    spCorrida.setAdapter(adapter);
-                    spCorrida.setSelection(obtenerPosicionItem(spCorrida,corridaBar));
+                    }
+                }catch(Exception e){
 
                 }
 
@@ -834,10 +836,6 @@ listado=mt.getNombreTienda();
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-
-                Toast toast = Toast.makeText(getActivity(), "CARGANDO....", Toast.LENGTH_LONG);
-                TextView x = (TextView) toast.getView().findViewById(android.R.id.message);
-                x.setTextColor(Color.YELLOW); toast.show();
                 punto.setAdapter(null);
                 puntos.clear();
                 limpiarCajas();
@@ -846,6 +844,7 @@ listado=mt.getNombreTienda();
                 punto.setAdapter(null);
 
                 //   llenarExistencias();
+                llenarTabla();
                 contarPuntos();
                 if(Principal.scannPass==true && buscador==0 ){
                     llenarTabla();
@@ -854,13 +853,14 @@ listado=mt.getNombreTienda();
                     ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),R.layout.spinner_item_punto, puntos);
                     punto.setAdapter(adapter);
                     punto.setSelection(obtenerPosicionItem(punto,String.valueOf(puntoBar)));
+                    Principal.scannPass=false;
                 }else if(Principal.scannPass==false && puntosCantidad==1 && buscador==0){
                     llenarTabla();
                     llenarPuntos();
 
                     ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),R.layout.spinner_item_punto, puntos);
                     punto.setAdapter(adapter);
-                    punto.setSelection(1);
+
 
                 }else if(Principal.scannPass==false && puntosCantidad>1 && buscador==0){
                     llenarTabla();
@@ -869,15 +869,15 @@ listado=mt.getNombreTienda();
                     ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),R.layout.spinner_item_punto, puntos);
                     punto.setAdapter(adapter);
 
-                }else if(buscador==1){
+                }else if(buscador==1 && Principal.scannPass==false){
                     traerDatosProducto();
                     llenarPuntos();
                     if(puntosCantidad==1){
-
+                        llenarTabla();
 
                         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),R.layout.spinner_item_punto, puntos);
                         punto.setAdapter(adapter);
-                        punto.setSelection(1);
+
 
                     }else if( puntosCantidad>1){
                         llenarTabla();
@@ -895,10 +895,21 @@ listado=mt.getNombreTienda();
                     ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),R.layout.spinner_item_punto, puntos);
                     punto.setAdapter(adapter);
 
+                }else if(buscador==1 && Principal.scannPass==true){
+                    Similar simi=new Similar();
+                    llenarTabla();
+                    traerDatosProducto();
+
+                    llenarPuntos();
+
+                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),R.layout.spinner_item_punto, puntos);
+                    punto.setAdapter(adapter);
+                    punto.setSelection(obtenerPosicionItem(punto,String.valueOf(puntoBar)));
+                    Principal.scannPass=false;
+
+
+
                 }
-
-
-
             }
 
             @Override
@@ -978,7 +989,7 @@ listado=mt.getNombreTienda();
             ubica="Producto sin ubicacion";
         }
         String sql="";
-            db.execSQL("INSERT INTO  contenedor (estilo, imagen, talla, cantidad, marca, color, sub, total, barcode,acabado,corrida, cliente,ubicacion) VALUES('"+sp2.getText().toString()+"', '"+idImagen+"', '"+punto.getSelectedItem()+"', '"+cantidadTXT.getText().toString()+"','"+idMarca+"','"+spColor.getSelectedItem()+"','"+variableS+"','"+pre+"','"+barcode+"','"+acabado+"','"+spCorrida.getSelectedItem()+"','"+clienteTXT.getText()+"','"+ubica+"')");
+            db.execSQL("INSERT INTO  contenedor (estilo, imagen, talla, cantidad, marca, color, sub, total, barcode,acabado,corrida, cliente,ubicacion) VALUES('"+sp2.getText().toString()+"', '"+idImagen+"', '"+punto.getSelectedItem()+"', '"+cantidadTXT.getText().toString()+"','"+marcas+"','"+color+"','"+variableS+"','"+pre+"','"+barcode+"','"+acabado+"','"+spCorrida.getSelectedItem()+"','"+clienteTXT.getText()+"','"+ubica+"')");
 
             pre=0;
 
@@ -1256,6 +1267,7 @@ return idOrden;
                 marcaBar=rs.getString(3);
                 corridaBar=rs.getString(4);
             }
+
             String estilo=getEstiloSimilar(barcode);
             sp2.setText(estilo);
             llenarSp();
@@ -1774,13 +1786,20 @@ public static String getColor(String color){
         }
 
     }
+
     public void limpiarCajas(){
         existenciasTXT.setText(null);
-
     }
+
+
     public void llenarTabla(){
         String idCorrida=getIdCorrida();
-
+         where=" where ";
+        if(buscador==0){
+            where+=" a.estilo = '"+sp2.getText()+"' and a.Color ="+idColor+" and a.acabado ="+idAcabado+" and a.marca ="+idMarca+" and a.corrida="+idCorrida;
+        }else if(buscador==1){
+            where+=" a.estilo = '"+sp2.getText()+"' and a.marca ="+idMarca+" and a.corrida="+idCorrida;
+        }
         try {
             Statement st = bdc.conexionBD(me.getServer(),me.getBase(),me.getUsuario(),me.getPass()).createStatement();
 
@@ -1790,7 +1809,7 @@ public static String getColor(String color){
                     "  left join empleado e on a.comprador=e.numero inner join departamentos d on a.DEPARTAMENTO=d.NUMERO\n" +
                     "  inner join tacones ta on a.TACON=ta.NUMERO inner join plantillas pl on a.PLANTILLA=pl.NUMERO inner join forros f on a.FORRO=f.NUMERO \n" +
                     "  inner join corridas co on a.corrida=co.id inner join suelas su on a.SUELA=su.numero inner join colores c on a.color = c.numero\n" +
-                    "  inner join acabados ac on a.ACABADO=ac.NUMERO inner join marcas ma on a.MARCA=ma.NUMERO left join imagenes im on a.id=im.id inner join clasific clas on a.CLASIFIC=clas.numero where a.estilo = '"+sp2.getText()+"' and a.Color ="+idColor+" and a.acabado = "+idAcabado+" and a.marca = "+idMarca+" and a.corrida="+idCorrida;
+                    "  inner join acabados ac on a.ACABADO=ac.NUMERO inner join marcas ma on a.MARCA=ma.NUMERO left join imagenes im on a.id=im.id inner join clasific clas on a.CLASIFIC=clas.numero "+ where;
                     ResultSet rs = st.executeQuery(sql);
 
             while (rs.next()) {
@@ -1826,7 +1845,7 @@ public static String getColor(String color){
 
 
         } catch (Exception e) {
-            Toast.makeText(getActivity(), "Error en llenar Tabla", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "", Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -1863,7 +1882,7 @@ public static String getColor(String color){
             md.setCliente(clienteTXT.getText().toString());
             md.setFecha("getDate()");
             md.setTotal(AuxTotal);
-            md.setUbicacion("-1");
+            md.setUbicacion(ubica);
             md.setStatus("1");
             md.setPares(AuxPares);
             md.setEmpleado(NombreUsuario);

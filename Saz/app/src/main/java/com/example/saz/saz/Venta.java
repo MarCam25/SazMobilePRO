@@ -102,10 +102,12 @@ public class Venta extends Fragment {
         String mensaje="No hay productos";
         try {
             Statement st = bdc.conexionBD(me.getServer(),me.getBase(),me.getUsuario(),me.getPass()).createStatement();
+
             ResultSet rs = st.executeQuery("select cd.numero, c.cliente, cast(Sum(pr.precio - (pr.precio * (pr.descto/100))) as decimal(8,2)) as total, count(cd.Llave) as pares, c.empleado from comanderoDet cd inner join comandero c on cd.numero = c.numero inner join precios pr on cd.barcode = pr.barcode and cd.talla =  pr.TALLA where c.empleado = '"+mu.getNombre()+"' and cd.status = 7 group by cd.numero, c.Cliente, c.empleado");
 
             Comandero comandero=null;
             while (rs.next()) {
+                mensaje="";
                 comandero=new Comandero();
 
                 comandero.setNumero(rs.getString(1));

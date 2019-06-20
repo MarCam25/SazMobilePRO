@@ -46,14 +46,12 @@ import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
 public class Consulta extends AppCompatActivity  {
     GridView gridview;
-    String empress;
     String NombreTienda;
 
     double descuentoFinal;
     double auxiliarDes;
 
-    private ZXingScannerView vistaescaner;
-    ArrayList<String> arrayList;
+
     double precio=0.0;
     Button btnDetalle, btnMas, btnMenos, btnAgregar,btnResumen,btnFinalizar;
     static int puntoBar;
@@ -62,10 +60,10 @@ public class Consulta extends AppCompatActivity  {
     ConexionSqlServer conex=new ConexionSqlServer();
     int cantidad=0, up=0;
     public static String VarEstilo;
-    static String clint, BarCodeFIN;
+    static String  BarCodeFIN;
     static  String estiloBar="";
-    TextView edtCodigo;
-    Double precioPedido;
+    String ubica;
+
     String variableS,descuento;
     public static ArrayList lista=new ArrayList();
     ArrayList listaAcabado=new ArrayList();
@@ -75,11 +73,10 @@ public class Consulta extends AppCompatActivity  {
     ArrayList puntos=new ArrayList();
     String numeroUsuario;
 
-    boolean xcaner=false;
+
     ConexionSQLiteHelper conn=new ConexionSQLiteHelper(this,"db tienda",null,1);
 
-    ArrayList listaTiendas=new ArrayList();
-    private String numeroTienda;
+
     long time =System.currentTimeMillis();
     String barcode;
     String estiloTem,puntoTem,precioTem, cantidadTem;
@@ -87,9 +84,9 @@ public class Consulta extends AppCompatActivity  {
     static  String idColor=null,idAcabado=null,idMarca=null,idCorrida=null;
     TextView precioTXT;
     int index=0;
-    private Button btnBardoce;
+
     double tot;
-    String user, scaneado;
+    String user;
     static String sku;
     String totalOrden, cantidadOrden;
     String intentResummen;
@@ -97,20 +94,20 @@ public class Consulta extends AppCompatActivity  {
     String  point;
     int existencias;
     Spinner sp,sp3, sp4, sp5, punto;
-    String num, str,mar;
+
     TextView existenciasTXT, cantidadTXT, unidadesTXT, importeTXT,descuentoTXT,totalTXT;
 
     public static EditText sp2;
 
-    TextView tiendaTxt,puntoTxt,totalTxt,dato1Txt,dato2Txt,dato3Txt;
+
     double r;
     String in, finn, inc;
     String estilo, color, acabado, marcas, linea, sublinea, temporada, descripcion, observaciones;
-    TextView lineaProvedor, provedor, pagina, basico, comprador, departamento, tacon, plantilla, forro, clasificacion, corrida, suela, ubicacion;
+    TextView  pagina, basico, comprador, departamento, tacon, plantilla, forro, clasificacion, corrida, suela, ubicacion;
 
     String listado;
 
-    java.sql.Timestamp timestamp=new java.sql.Timestamp(time);
+
 
     String idFecha;
     ModeloNumeroOrden mno=new ModeloNumeroOrden();
@@ -159,7 +156,6 @@ public class Consulta extends AppCompatActivity  {
             btnAgregar=(Button)findViewById(R.id.btnAgregar);
             btnMenos=(Button)findViewById(R.id.btnMenos);
             btnFinalizar=(Button)findViewById(R.id.btnFinalizar);
-            btnBardoce=(Button)findViewById(R.id.btnBarCode);
 
 
             btnDetalle=(Button)findViewById(R.id.btnDetalle);
@@ -267,15 +263,13 @@ public class Consulta extends AppCompatActivity  {
                         startActivity(intent);
                     }
                     }else{
-
-
+                       Toast.makeText(getApplication(),"Tienes que tener un producto agregado para guardar",Toast.LENGTH_LONG).show();
                     }
 
 
                 }catch (Exception e){
                    e.getMessage();
                 }
-
 
 
 
@@ -369,11 +363,12 @@ public class Consulta extends AppCompatActivity  {
             punto.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                        cantidadTXT.setText("0");
+
                         consultarCantidadReal();
 
 
                         traerPrecio();
+
 
                     }
 
@@ -601,7 +596,7 @@ public class Consulta extends AppCompatActivity  {
             SQLiteDatabase db=conn.getWritableDatabase();
 
 
-    String sql="INSERT INTO  pedido (estilo, imagen, talla, cantidad, marca, color, sub, total, barcode,acabado, idOrden ) VALUES('"+sp2.getText().toString()+"', '"+idImagen+"', '"+punto.getSelectedItem()+"', '"+cantidadTXT.getText().toString()+"','"+sp4.getSelectedItem()+"','"+sp.getSelectedItem()+"','"+variableS+"','"+pre+"','"+barcode+"','"+sp3.getSelectedItem()+"',"+mno.getNumeroOrden()+")";
+    String sql="INSERT INTO  pedido (estilo, imagen, talla, cantidad, marca, color, sub, total, barcode,acabado, idOrden, ubicacion ) VALUES('"+sp2.getText().toString()+"', '"+idImagen+"', '"+punto.getSelectedItem()+"', '"+cantidadTXT.getText().toString()+"','"+sp4.getSelectedItem()+"','"+sp.getSelectedItem()+"','"+variableS+"','"+pre+"','"+barcode+"','"+sp3.getSelectedItem()+"',"+mno.getNumeroOrden()+",'"+ubica+"')";
             db.execSQL(sql);
 
 
@@ -1039,6 +1034,8 @@ public class Consulta extends AppCompatActivity  {
                     marcas=rs.getString(6);
                     acabado=rs.getString(7);
                     idImagen=rs.getString(8);
+                    ubica=rs.getString(9);
+
                 }
 
                 // Toast.makeText(Principal.this,"Inicio de sesion Exitosa...!!!: " + empresa, Toast.LENGTH_LONG).show();

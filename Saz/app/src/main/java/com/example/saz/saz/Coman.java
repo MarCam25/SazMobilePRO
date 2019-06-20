@@ -58,7 +58,7 @@ public class Coman extends Fragment {
     public static ModeloEmpresa me = new ModeloEmpresa();
     public static ConexionBDCliente bdc = new ConexionBDCliente();
     public static boolean notific = false;
-    public static boolean vuelt = false;
+
     int cantidadRegistros;
     ConexionSqlServer conex=new ConexionSqlServer();
     ModeloUsuario mu=new ModeloUsuario();
@@ -67,7 +67,7 @@ public class Coman extends Fragment {
     private Handler handler = new Handler();
     Button act;
     Context context;
-    String dispositivo;
+
     View root;
     int tipo=0;
 
