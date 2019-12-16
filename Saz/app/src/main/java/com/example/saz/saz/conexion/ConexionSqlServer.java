@@ -6,13 +6,17 @@ import android.widget.Toast;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ConexionSqlServer {
+    Connection conn=null;
 
     public Connection conexionBD()
     {
 
-        Connection conn=null;
+
 
         try
         {
@@ -32,5 +36,14 @@ public class ConexionSqlServer {
 
 
         return conn;
+    }
+
+    public void cierraConexion() {
+        try {
+         conn.close();
+        } catch (SQLException sqle) {
+
+
+        }
     }
 }

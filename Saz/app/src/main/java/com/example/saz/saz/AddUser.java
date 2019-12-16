@@ -1,7 +1,11 @@
 package com.example.saz.saz;
 
+import android.app.ProgressDialog;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -16,6 +20,7 @@ import com.example.saz.saz.Modelo.ModeloEmpresa;
 import com.example.saz.saz.conexion.ConexionBDCliente;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 
 
@@ -23,15 +28,15 @@ public class AddUser extends Fragment {
     public static ModeloEmpresa me=new ModeloEmpresa();
     public static ConexionBDCliente bdc=new ConexionBDCliente();
     View root;
-EditText nombre, correo, contraseña, verificar;
-Button agregar;
-
-
+    EditText nombre, correo, contraseña, verificar;
+    Button agregar;
+    boolean insert=true,mensaje=false;
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         root= inflater.inflate(R.layout.fragment_add_user, container, false);
               nombre=(EditText)root.findViewById(R.id.idNombre);
               correo=(EditText)root.findViewById(R.id.idCorreo);
@@ -40,20 +45,25 @@ Button agregar;
               agregar=(Button)root.findViewById(R.id.idAgregar);
 
 
+
+
+
               agregar.setOnClickListener(new View.OnClickListener() {
                   @Override
                   public void onClick(View v) {
-                      Toast toast =new  Toast(getActivity());
-                      pl.droidsonroids.gif.GifImageView view=new  pl.droidsonroids.gif.GifImageView(getActivity());
-                      view.setImageResource(R.drawable.loading);
-                      toast.setView(view);
-                      toast.show();
+
+
 
                       if(contraseña.getText().toString().isEmpty() || nombre.getText().toString().isEmpty() || correo.getText().toString().isEmpty() || verificar.getText().toString().isEmpty()  ){
                           Toast.makeText(getActivity(),"Todos los campos deben llenarse",Toast.LENGTH_LONG).show();
                       }else{
 
                           verificarContraseña();
+                          if(mensaje==true){
+
+                          }
+
+
                       }
 
 
@@ -61,28 +71,18 @@ Button agregar;
 
                   }
               });
-        contraseña.setCustomSelectionActionModeCallback(new ActionMode.Callback() {
 
-            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-                return false;
-            }
-
-            public void onDestroyActionMode(ActionMode mode) {
-            }
-
-            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-                return false;
-            }
-
-            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-                return false;
-            }
-        });
 
         return root;
     }
 
     public void verificarContraseña(){
+        final ProgressDialog progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setIcon(R.mipmap.ic_launcher);
+        progressDialog.setMessage("Cargando...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+
         if(!contraseña.getText().toString().isEmpty() || !verificar.getText().toString().isEmpty())
         {
 
@@ -112,16 +112,17 @@ Button agregar;
 
 
                             int id=getMaxId();
-                            verificarExistencia();
-
-                            addUser(id);
-
-                            limpiarCajas();
-
-
-
-
-
+                            //verificarExistencia();
+                         verificarUsuarios();
+                            verificarNombre();
+                            if(insert==true){
+                                addUser(id);
+                                limpiarCajas();
+                                Toast.makeText(getActivity(), "Usuario agregado", Toast.LENGTH_LONG).show();
+                                progressDialog.dismiss();
+                            }else if(insert==false){
+                                progressDialog.dismiss();
+                            }
 
 
                     } else {
@@ -148,19 +149,10 @@ Button agregar;
             Statement st = bdc.conexionBD(me.getServer(),me.getBase(),me.getUsuario(),me.getPass()).createStatement();
             String sql="Select id from empleado where nombre='"+nombre.getText().toString()+"'";
             ResultSet rs=st.executeQuery(sql);
-
             while (rs.next()){
                 verificador=rs.getInt(1);
             }
-
-
-            if(verificador==0){
-                Toast.makeText(getActivity(), "Usuario agregado", Toast.LENGTH_LONG).show();
-
-            }else if(verificador>=1){
-                Toast.makeText(getActivity(), "El usuario que intentas agregar ya existe", Toast.LENGTH_LONG).show();
-            }
-
+            st.close();
         } catch (Exception e) {
             Toast.makeText(getActivity(), "El usuario que intentas agregar ya existe Error No.344", Toast.LENGTH_LONG).show();
         }
@@ -168,16 +160,37 @@ Button agregar;
 
     public void addUser(int id){
         id=id+1;
-        String mensaje;
+
         try {
             Statement st = bdc.conexionBD(me.getServer(),me.getBase(),me.getUsuario(),me.getPass()).createStatement();
-            String sql="if not exists (select 1 from empleado where nombre = '"+nombre.getText()+"')  begin  INSERT INTO empleado(nombre, [user],[PASSWORD], [status], id)VALUES ('"+nombre.getText()+"','"+correo.getText()+"','"+contraseña.getText()+"',0,"+id+")    end  else  PRINT 'usuario no agregado'  ";
-            st.executeUpdate(sql);
+            String sql="INSERT INTO empleado(nombre, [user],[PASSWORD], [status], id)VALUES ('"+nombre.getText()+"','"+correo.getText()+"','"+contraseña.getText()+"',0,"+id+")   ";
+            int resultado=st.executeUpdate(sql);
+            mensaje=true;
 
+            if(resultado>0){
+                String[] TO = {"ayuda@secuencia.com"}; //Direcciones email  a enviar.
+                String[] CC = {""}; //Direcciones email con copia.
 
+                Intent emailIntent = new Intent(Intent.ACTION_SEND);
 
-            } catch (Exception e) {
-            Toast.makeText(getActivity(), "El usuario que intentas agregar ya existe", Toast.LENGTH_LONG).show();
+                emailIntent.setData(Uri.parse("mailto:"));
+                emailIntent.setType("text/plain");
+                emailIntent.putExtra(Intent.EXTRA_EMAIL, TO);
+                emailIntent.putExtra(Intent.EXTRA_CC, CC);
+                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Activación de usuario ");
+                emailIntent.putExtra(Intent.EXTRA_TEXT, "ayuda@secuencia.com"); // * configurar email aquí!
+
+                try {
+                    startActivity(Intent.createChooser(emailIntent, "Enviar email de activacion."));
+                    Log.i("EMAIL", "Enviando email...");
+                }
+                catch (android.content.ActivityNotFoundException e) {
+
+                }
+            }
+            st.close();
+            } catch (SQLException e) {
+            e.getMessage();
         }
     }
 
@@ -193,22 +206,65 @@ Button agregar;
                 id=rs.getInt(1);
             }
 
-
+            st.close();
         } catch (Exception e) {
             Toast.makeText(getActivity(), "Error al verificar la contraseña", Toast.LENGTH_LONG).show();
         }
         return id;
     }
 
-                     public void limpiarCajas(){
-                         nombre.setText(null);
-                         contraseña.setText(null);
-                         verificar.setText(null);
-                         correo.setText(null);
+    public void limpiarCajas(){
 
-                     }
+        nombre.setText(null);
+        contraseña.setText(null);
+        verificar.setText(null);
+        correo.setText(null);
+
+    }
 
 
+    public void verificarUsuarios(){
+        int id=0;
+        try {
+            Statement st = bdc.conexionBD(me.getServer(),me.getBase(),me.getUsuario(),me.getPass()).createStatement();
+            String sql="select id from empleado where user='"+correo.getText()+"' ";
+            ResultSet rs=st.executeQuery(sql);
+            while(rs.next()){
+                id=rs.getInt(1);
+            }
+            st.close();
+
+            if(id>0){
+                insert=false;
+                Toast.makeText(getActivity(),"Este correo ya existe",Toast.LENGTH_LONG).show();
+            }
+
+
+        } catch (Exception e) {
+            Toast.makeText(getActivity(), "Error al verificar la contraseña", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    public void verificarNombre(){
+        int id=0;
+        try {
+            Statement st = bdc.conexionBD(me.getServer(),me.getBase(),me.getUsuario(),me.getPass()).createStatement();
+            String sql="select id from empleado where nombre='"+nombre.getText()+"' ";
+            ResultSet rs=st.executeQuery(sql);
+            while(rs.next()){
+                id=rs.getInt(1);
+            }
+            st.close();
+            if(id>0){
+                insert=false;
+                Toast.makeText(getActivity(),"Este empleado ya existe",Toast.LENGTH_LONG).show();
+            }
+
+
+        } catch (Exception e) {
+            Toast.makeText(getActivity(), "Error al verificar la contraseña", Toast.LENGTH_LONG).show();
+        }
+    }
 
     }
 

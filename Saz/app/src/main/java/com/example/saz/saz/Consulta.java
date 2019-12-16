@@ -3,10 +3,8 @@ package com.example.saz.saz;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -19,7 +17,6 @@ import android.widget.GridView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import com.example.saz.saz.Modelo.ModeloEmpresa;
 import com.example.saz.saz.Modelo.ModeloNumeroOrden;
@@ -30,30 +27,20 @@ import com.example.saz.saz.conexion.ConexionSQLiteHelper;
 import com.example.saz.saz.conexion.ConexionSqlServer;
 import com.example.saz.saz.entidades.Comandero;
 import com.example.saz.saz.utilidades.Utilidades;
-
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-
-import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
 public class Consulta extends AppCompatActivity  {
-    GridView gridview;
     String NombreTienda;
-
     double descuentoFinal;
     double auxiliarDes;
-
-
     double precio=0.0;
-    Button btnDetalle, btnMas, btnMenos, btnAgregar,btnResumen,btnFinalizar;
+    Button btnDetalle, btnMas, btnMenos, btnAgregar,btnFinalizar;
     static int puntoBar;
     public static ModeloEmpresa me=new ModeloEmpresa();
     public static ConexionBDCliente bdc=new ConexionBDCliente();
@@ -63,7 +50,6 @@ public class Consulta extends AppCompatActivity  {
     static String  BarCodeFIN;
     static  String estiloBar="";
     String ubica;
-
     String variableS,descuento;
     public static ArrayList lista=new ArrayList();
     ArrayList listaAcabado=new ArrayList();
@@ -72,48 +58,29 @@ public class Consulta extends AppCompatActivity  {
     ArrayList listaCorrida=new ArrayList();
     ArrayList puntos=new ArrayList();
     String numeroUsuario;
-
-
     ConexionSQLiteHelper conn=new ConexionSQLiteHelper(this,"db tienda",null,1);
-
-
-    long time =System.currentTimeMillis();
     String barcode;
     String estiloTem,puntoTem,precioTem, cantidadTem;
     String idImagen;
     static  String idColor=null,idAcabado=null,idMarca=null,idCorrida=null;
     TextView precioTXT;
-    int index=0;
-
     double tot;
-    String user;
     static String sku;
     String totalOrden, cantidadOrden;
     String intentResummen;
-    double pre = 0, contenedor;
-    String  point;
+    double pre = 0;
     int existencias;
     Spinner sp,sp3, sp4, sp5, punto;
-
     TextView existenciasTXT, cantidadTXT, unidadesTXT, importeTXT,descuentoTXT,totalTXT;
-
     public static EditText sp2;
-
-
     double r;
     String in, finn, inc;
-    String estilo, color, acabado, marcas, linea, sublinea, temporada, descripcion, observaciones;
-    TextView  pagina, basico, comprador, departamento, tacon, plantilla, forro, clasificacion, corrida, suela, ubicacion;
-
+    String estilo, color, acabado, marcas;
     String listado;
-
-
-
     String idFecha;
     ModeloNumeroOrden mno=new ModeloNumeroOrden();
     ModeloUsuario mu=new ModeloUsuario();
     String NombreUsuario;
-
     Zapato zapato=new Zapato();
 
 
@@ -121,7 +88,6 @@ public class Consulta extends AppCompatActivity  {
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_consulta);
-            String[] ar;
             consultarT();
 
         Toast.makeText(getApplicationContext(), ""+mno.getEstilo(), Toast.LENGTH_SHORT).show();
@@ -129,7 +95,6 @@ public class Consulta extends AppCompatActivity  {
 
 
       getSupportActionBar().setTitle("Editar Pedido sazmobile.com");
-            //obtenerLineaConexion();
             ToolBarNombre();
 
             getUser();
@@ -160,31 +125,7 @@ public class Consulta extends AppCompatActivity  {
 
             btnDetalle=(Button)findViewById(R.id.btnDetalle);
             existenciasTXT=(TextView)findViewById(R.id.existenciasTXT);
-        /*    tiendaTxt=(TextView)findViewById(R.id.tiendaCol);
-            puntoTxt=(TextView)findViewById(R.id.puntoCol);
-            totalTxt=(TextView)findViewById(R.id.totalCol);
 
-            dato1Txt=(TextView)findViewById(R.id.tiendaFil);
-            dato2Txt=(TextView)findViewById(R.id.puntoFil);
-            dato3Txt=(TextView)findViewById(R.id.totalFil);
-
-
-*/
-
-
-
-
-
-     /*   btnBardoce.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                xcaner=true;
-                Intent intent=new Intent(getApplicationContext(),Scann.class);
-                startActivity(intent);
-
-
-            }
-        });*/
 
 
      btnDetalle.setOnClickListener(new View.OnClickListener() {
@@ -221,8 +162,7 @@ public class Consulta extends AppCompatActivity  {
 
                     if(up!=0) {
                         FormatoFecha();
-                         //  insertarComandero();
-                        // insertarComanderoDet();
+
 
                         limpiarCajas();
                         Finalizar();
@@ -363,13 +303,8 @@ public class Consulta extends AppCompatActivity  {
             punto.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-                        consultarCantidadReal();
-
-
+                        buscarEnMitienda();
                         traerPrecio();
-
-
                     }
 
                     @Override
@@ -493,18 +428,14 @@ public class Consulta extends AppCompatActivity  {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                      llenarTabla();
-                        // contarColumnas();
-                        //llenarExistencias();
+
                         llenarPuntos();
-                        //   llenarExistencias();
+
                         ArrayAdapter<String> adapter = new ArrayAdapter<String>(Consulta.this, R.layout.spinner_item_punto, puntos);
                         punto.setAdapter(adapter);
                         punto.setSelection(obtenerPosicionItem(punto,zapato.getPuntoE()));
 
 
-
-                        //              AdapterDatos adapter= new AdapterDatos(listaDatos);
-    //                recycler.setAdapter(adapter);
                     }
 
                     @Override
@@ -566,43 +497,27 @@ public class Consulta extends AppCompatActivity  {
             precioTem = String.valueOf(tem);
             estiloTem = sp2.getText().toString();
             cantidadTem = String.valueOf(cantidad);
-           // Resumen(estiloTem, puntoTem, cantidadTem, precioTem);
+
             estiloTem = null;
             puntoTem = null;
             cantidadTem = null;
             precioTem = null;
         }
-       /* public void Resumen(String estilo,String punto, String cantidad, String precio){
-            clint=clienteTXT.getText().toString();
-
-            intentResummen+="-"+clint+","+estilo+","+punto+","+cantidad+","+precio+","+id[0]+","+marca[0]+","+variableS+","+barcode+","+numero[0];
-        }*/
 
 
 
-        public static void cargarDatos(String var){
-            VarEstilo=var;
-            buscarEnSku();
-            validarSku();
-            getBarcode();
-            getEstilo();
-            sp2.setText(estiloBar);
-            llenarSp();
-        }
 
 
         public void insertarPedido(){
             ConexionSQLiteHelper conn = new ConexionSQLiteHelper(this, "db tienda", null, 1);
             SQLiteDatabase db=conn.getWritableDatabase();
 
-
-    String sql="INSERT INTO  pedido (estilo, imagen, talla, cantidad, marca, color, sub, total, barcode,acabado, idOrden, ubicacion ) VALUES('"+sp2.getText().toString()+"', '"+idImagen+"', '"+punto.getSelectedItem()+"', '"+cantidadTXT.getText().toString()+"','"+sp4.getSelectedItem()+"','"+sp.getSelectedItem()+"','"+variableS+"','"+pre+"','"+barcode+"','"+sp3.getSelectedItem()+"',"+mno.getNumeroOrden()+",'"+ubica+"')";
+            String sql="INSERT INTO  pedido (estilo, imagen, talla, cantidad, marca, color, sub, total, barcode,acabado, idOrden, ubicacion ) VALUES('"+sp2.getText().toString()+"', '"+idImagen+"', '"+punto.getSelectedItem()+"', '"+cantidadTXT.getText().toString()+"','"+sp4.getSelectedItem()+"','"+sp.getSelectedItem()+"','"+variableS+"','"+pre+"','"+barcode+"','"+sp3.getSelectedItem()+"',"+mno.getNumeroOrden()+",'"+ubica+"')";
             db.execSQL(sql);
 
-
-    contarTotal();
-    contarPares();
-    upDateOrden();
+            contarTotal();
+            contarPares();
+            upDateOrden();
 
         }
 
@@ -613,14 +528,14 @@ public class Consulta extends AppCompatActivity  {
 
         SQLiteDatabase db = conn.getReadableDatabase();
 
-        Comandero comandero = null;
 
 
         String sql = "SELECT SUM(total) FROM pedido WHERE idOrden="+mno.getNumeroOrden();
         Cursor cursor = db.rawQuery(sql, null);
-        while (cursor.moveToNext()) {
+        while (cursor.moveToNext())
+        {
 
-    totalOrden=cursor.getString(0);
+            totalOrden=cursor.getString(0);
 
 
         }
@@ -631,50 +546,19 @@ public class Consulta extends AppCompatActivity  {
     }
 
 
-        public void consultarCantidadReal(){
-            int real=0;
-            try {
 
-                List<Map<String, String>> data = null;
-                data = new ArrayList<Map<String, String>>();
-                Statement st = bdc.conexionBD(me.getServer(),me.getBase(),me.getUsuario(),me.getPass()).createStatement();
-                String sql="SELECT cantreal FROM existen WHERE barcode='"+barcode+ "' and talla="+punto.getSelectedItem()+" and tienda="+listado;
-                ResultSet rs = st.executeQuery(sql);
-                ResultSetMetaData rsmd=rs.getMetaData();
-                while(rs.next()) {
-                    real =rs.getInt(1);
-
-
-
-                }
-
-
-            } catch (SQLException e1) {
-
-                Toast.makeText(getApplicationContext(),"Error cantidad Real",Toast.LENGTH_LONG).show();
-
-            }
-            buscarEnMitienda(real);
-
-        }
 
 
     public void contarPares(){
 
         ConexionSQLiteHelper conn = new ConexionSQLiteHelper(this, "db tienda", null, 1);
-
         SQLiteDatabase db = conn.getReadableDatabase();
-
-        Comandero comandero = null;
-
 
         String sql = "SELECT SUM(cantidad) FROM pedido WHERE idOrden="+mno.getNumeroOrden();
         Cursor cursor = db.rawQuery(sql, null);
         while (cursor.moveToNext()) {
 
             cantidadOrden=cursor.getString(0);
-
-
         }
 
         cursor.close();
@@ -686,10 +570,8 @@ public class Consulta extends AppCompatActivity  {
         public void upDateOrden(){
             ConexionSQLiteHelper conn = new ConexionSQLiteHelper(this, "db tienda", null, 1);
             SQLiteDatabase db=conn.getWritableDatabase();
-
-
-    String sql="UPDATE orden set total="+totalOrden+ ",pares="+cantidadTXT.getText() + " WHERE idOrden="+mno.getNumeroOrden();
-           db.execSQL(sql);
+            String sql="UPDATE orden set total="+totalOrden+ ",pares=pares+"+cantidadTXT.getText() + " WHERE idOrden="+mno.getNumeroOrden();
+            db.execSQL(sql);
 
         }
 
@@ -697,33 +579,22 @@ public class Consulta extends AppCompatActivity  {
         public boolean onKeyDown(int keyCode, KeyEvent event) {
             if ((keyCode == KeyEvent.KEYCODE_BACK)) {
 
-
             }
             return true;
         }
 
-
-        public void buscarEnMitienda(int  real){
+        public void buscarEnMitienda(){
             try {
-              /*  String numero;
-                String[] n;
-                numero=spT.getSelectedItem().toString();
-                n=numero.split("-");*/
 
-                // Toast.makeText(getApplicationContext(),spT.getSelectedItem().toString() , Toast.LENGTH_LONG).show();
-                List<Map<String, String>> data = null;
-                data = new ArrayList<Map<String, String>>();
                 Statement st = bdc.conexionBD(me.getServer(),me.getBase(),me.getUsuario(),me.getPass()).createStatement();
-                ResultSet rs = st.executeQuery("lupita'"+barcode+"',"+punto.getSelectedItem()+","+listado);
-                ResultSetMetaData rsmd=rs.getMetaData();
+                ResultSet rs = st.executeQuery("lupitaApartados'"+barcode+"',"+punto.getSelectedItem()+","+listado+",''");
                 while(rs.next()) {
 
 
-                    existencias=(rs.getInt(2)-real);
+                    existencias=(rs.getInt(2));
                     existenciasTXT.setText(String.valueOf(existencias));
-
-
                 }
+                st.close();
 
             } catch (SQLException e1) {
                 e1.printStackTrace();
@@ -731,7 +602,6 @@ public class Consulta extends AppCompatActivity  {
 
             }
 
-            // Toast.makeText(Principal.this,"Inicio de sesion Exitosa...!!!: " + empresa, Toast.LENGTH_LONG).show();
         }
 
 
@@ -769,10 +639,8 @@ public class Consulta extends AppCompatActivity  {
 
                     lista.add(add);
 
-
-
-
                 }
+                st.close();
 
                 //
             } catch (Exception e) {
@@ -796,6 +664,7 @@ public class Consulta extends AppCompatActivity  {
 
                 }
 
+                st.close();
 
             } catch (Exception e) {
 
@@ -816,11 +685,11 @@ public class Consulta extends AppCompatActivity  {
 
                     listaAcabado.add(rs.getString(1));
 
-
-
                 }
 
-                // Toast.makeText(Principal.this,"Inicio de sesion Exitosa...!!!: " + empresa, Toast.LENGTH_LONG).show();
+                st.close();
+
+
             } catch (Exception e) {
                 Toast.makeText(this, "Error en sp3", Toast.LENGTH_SHORT).show();
             }
@@ -839,11 +708,9 @@ public class Consulta extends AppCompatActivity  {
                 while (rs.next()) {
 
                     idAcabado=rs.getString(1);
-
-
-
                 }
 
+                st.close();
 
             } catch (Exception e) {
 
@@ -864,12 +731,10 @@ public class Consulta extends AppCompatActivity  {
                 while (rs.next()) {
 
                     listaMarca.add(rs.getString(1));
-
-
-
                 }
+                st.close();
 
-                // Toast.makeText(Principal.this,"Inicio de sesion Exitosa...!!!: " + empresa, Toast.LENGTH_LONG).show();
+
             } catch (Exception e) {
                 Toast.makeText(this, "Error en sp4", Toast.LENGTH_SHORT).show();
             }
@@ -888,8 +753,8 @@ public class Consulta extends AppCompatActivity  {
                 while (rs.next()) {
 
                     idMarca=rs.getString(1);
-
                 }
+                st.close();
 
 
             } catch (Exception e) {
@@ -906,15 +771,12 @@ public class Consulta extends AppCompatActivity  {
                 Statement st = bdc.conexionBD(me.getServer(),me.getBase(),me.getUsuario(),me.getPass()).createStatement();
                 String sql="select  co.Nombre as Corrida from corridas co inner join articulo a on co.id = a.corrida where a.estilo = '"+sp2.getText()+"' and a.Color = "+idColor+" and a.acabado = "+idAcabado+" and a.marca =" +idMarca+"";
                 ResultSet rs = st.executeQuery(sql);
-    //articulo.barcode
-
                 while (rs.next()) {
 
                     listaCorrida.add(rs.getString(1));
 
                 }
-
-                // Toast.makeText(Principal.this,"Inicio de sesion Exitosa...!!!: " + empresa, Toast.LENGTH_LONG).show();
+                st.close();
             } catch (Exception e) {
                 Toast.makeText(this, "Error en sp5", Toast.LENGTH_SHORT).show();
             }
@@ -927,15 +789,12 @@ public class Consulta extends AppCompatActivity  {
                 Statement st = bdc.conexionBD(me.getServer(),me.getBase(),me.getUsuario(),me.getPass()).createStatement();
                 String sql="SELECT id FROM corridas WHERE nombre='"+corrida+"'";
                 ResultSet rs = st.executeQuery(sql);
-
-
                 while (rs.next()) {
 
                     idCorrida=rs.getString(1);
 
-
-
                 }
+                st.close();
 
 
             } catch (Exception e) {
@@ -945,14 +804,12 @@ public class Consulta extends AppCompatActivity  {
         }
 
         public void traerPrecio() {
-            double Total;
+
 
             try {
                 Statement st = bdc.conexionBD(me.getServer(),me.getBase(),me.getUsuario(),me.getPass()).createStatement();
                 String sql="select precio,  DESCTO from precios where BARCODE="+"'"+barcode+"' and talla="+punto.getSelectedItem();
                 ResultSet rs = st.executeQuery(sql);
-
-
                 while (rs.next()) {
                     variableS=rs.getString(1);
                     descuento=rs.getString(2);
@@ -960,8 +817,7 @@ public class Consulta extends AppCompatActivity  {
                     descuentoTXT.setText("%"+descuento);
                     generarDescuento();
                 }
-
-                // Toast.makeText(Principal.this,"Inicio de sesion Exitosa...!!!: " + empresa, Toast.LENGTH_LONG).show();
+                st.close();
             } catch (Exception e) {
                 Toast.makeText(getApplicationContext(), "Error en sp5", Toast.LENGTH_SHORT).show();
             }
@@ -994,12 +850,10 @@ public class Consulta extends AppCompatActivity  {
                 Statement st = bdc.conexionBD(me.getServer(),me.getBase(),me.getUsuario(),me.getPass()).createStatement();
                 String sql=" select corridas.id from corridas  inner join articulo on  corridas.id=articulo.corrida  where estilo='"+sp2.getText()+"' and color="+idColor+" and acabado="+idAcabado+" and marca="+idMarca;
                 ResultSet rs = st.executeQuery(sql);
-
-
                 while (rs.next()) {
                     idCorrida=rs.getString(1);
-
                 }
+                st.close();
 
 
             } catch (Exception e) {
@@ -1024,8 +878,6 @@ public class Consulta extends AppCompatActivity  {
                 ResultSet rs = st.executeQuery(sql);
 
                 while (rs.next()) {
-
-
                     barcode=rs.getString(1);
                     in=rs.getString(2);
                     finn=rs.getString(3);
@@ -1037,8 +889,7 @@ public class Consulta extends AppCompatActivity  {
                     ubica=rs.getString(9);
 
                 }
-
-                // Toast.makeText(Principal.this,"Inicio de sesion Exitosa...!!!: " + empresa, Toast.LENGTH_LONG).show();
+                st.close();
             } catch (Exception e) {
                 Toast.makeText(getApplicationContext(), "Error en llenar Tabla", Toast.LENGTH_SHORT).show();
             }
@@ -1055,11 +906,8 @@ public class Consulta extends AppCompatActivity  {
                 while (rs.next()) {
 
                     NombreTienda=rs.getString(1);
-
-
                 }
-
-                // Toast.makeText(Principal.this,"Inicio de sesion Exitosa...!!!: " + empresa, Toast.LENGTH_LONG).show();
+                st.close();
             } catch (Exception e) {
                 Toast.makeText(getApplicationContext(), "Error en llenar encabezado", Toast.LENGTH_SHORT).show();
             }
@@ -1072,8 +920,9 @@ public class Consulta extends AppCompatActivity  {
             try {
 
                         Statement st = bdc.conexionBD(me.getServer(), me.getBase(), me.getUsuario(), me.getPass()).createStatement();
-                       String sql="update existen set cantreal= cantreal + " +cantidadTXT.getText().toString() + " ,  pedido = pedido + " + cantidadTXT.getText().toString() + " where barcode ='" + barcode+ "' and talla = " + punto.getSelectedItem() + " and tienda = " + listado;
+                        String sql="update existen set cantreal= cantreal + " +cantidadTXT.getText().toString() + " ,  pedido = pedido + " + cantidadTXT.getText().toString() + " where barcode ='" + barcode+ "' and talla = " + punto.getSelectedItem() + " and tienda = " + listado;
                         st.executeUpdate(sql);
+                        st.close();
 
             } catch (Exception e) {
                 Toast.makeText(getApplicationContext(), "Error al finalizar el pedido", Toast.LENGTH_SHORT).show();
@@ -1081,31 +930,8 @@ public class Consulta extends AppCompatActivity  {
 
         }
 
-        public void insertarComanderoDet(){
-            try {
-                String[] columna=null,fila=null;
-
-                columna=intentResummen.split("-");
-                for(int i=1;i<columna.length;i++) {
-                    fila=columna[i].split(",");
-                    for(int x=0;x<1;x++) {
-                        Statement st = bdc.conexionBD(me.getServer(), me.getBase(), me.getUsuario(), me.getPass()).createStatement();
-
-                        st.executeUpdate("insert into comanderoDet (numero,tienda,barcode,estilo,color,acabado,talla,[status],llave) values ('"+idFecha+"',"+listado+",'"+fila[8]+"','"+fila[1]+"',"+fila[5]+","+fila[9]+","+fila[2]+",1,newId())");
-                    }
-                }
-            } catch (Exception e) {
-                Toast.makeText(getApplicationContext(), "Error comanderoDet", Toast.LENGTH_SHORT).show();
-            }
-
-        }
-
-
-
-
         public void FormatoFecha(){
             String au=null;
-            int cont=0;
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddhhmmss", Locale.getDefault());
 
             Date date=new Date();
@@ -1134,12 +960,12 @@ public class Consulta extends AppCompatActivity  {
             try {
                 Statement st = bdc.conexionBD(me.getServer(),me.getBase(),me.getUsuario(),me.getPass()).createStatement();
                 ResultSet rs=st.executeQuery("select numero, nombre from empleado where [user]='"+mno.getUsuario()+"'");
-
-    while(rs.next()){
-        numeroUsuario=rs.getString(1);
-        NombreUsuario=(rs.getString( 2));
-    }
-
+                while(rs.next())
+                {
+                    numeroUsuario=rs.getString(1);
+                    NombreUsuario=(rs.getString( 2));
+                }
+                st.close();
 
             } catch (Exception e) {
                 Toast.makeText(getApplicationContext(), "Error al optener usuario", Toast.LENGTH_SHORT).show();
@@ -1154,12 +980,12 @@ public class Consulta extends AppCompatActivity  {
             try {
                 Statement st = bdc.conexionBD(me.getServer(),me.getBase(),me.getUsuario(),me.getPass()).createStatement();
                 ResultSet rs = st.executeQuery("select saz from sku where sku ='"+VarEstilo+"'" );
-
-
-                while (rs.next()) {
+                while (rs.next())
+                {
                     sku=rs.getString(1);
-
                 }
+
+                st.close();
 
 
             } catch (Exception e) {
@@ -1229,14 +1055,11 @@ public class Consulta extends AppCompatActivity  {
         try {
             Statement st = bdc.conexionBD(me.getServer(),me.getBase(),me.getUsuario(),me.getPass()).createStatement();
             ResultSet rs = st.executeQuery("select p.barcode from precios p inner join articulo a on a.barcode = p.barcode where p.talla = "+puntoBar+" and a.id = "+CodigoBar);
-
-
-            while (rs.next()) {
+            while (rs.next())
+            {
             BarCodeFIN=rs.getString(1);
-
-
-
             }
+            st.close();
 
 
         } catch (Exception e) {
@@ -1250,12 +1073,11 @@ public class Consulta extends AppCompatActivity  {
                 Statement st = bdc.conexionBD(me.getServer(),me.getBase(),me.getUsuario(),me.getPass()).createStatement();
                 ResultSet rs = st.executeQuery("select a.ESTILO from colores c inner join articulo a on c.numero = a.color where a.BARCODE='"+BarCodeFIN+"'");
 
-                while (rs.next()) {
+                while (rs.next())
+                {
                     estiloBar=rs.getString(1);
-
-
-
                 }
+                st.close();
 
 
             } catch (Exception e) {
@@ -1330,6 +1152,7 @@ public class Consulta extends AppCompatActivity  {
                 Statement st = bdc.conexionBD(me.getServer(), me.getBase(), me.getUsuario(), me.getPass()).createStatement();
                 String sql="update existen set cantreal = cantreal - " + zapato.getCantidadE()+ " ,  pedido = pedido - " + zapato.getCantidadE()+ " where barcode ='" + barcode+ "' and talla = " + zapato.getPuntoE()+ " and tienda = " + ConsultaF.listado;
                 st.executeUpdate(sql);
+                st.close();
 
             }catch (Exception e) {
                 Toast.makeText(this, "Error al finalizar el pedido", Toast.LENGTH_SHORT).show();

@@ -52,7 +52,7 @@ public class AdapterEdicion extends RecyclerView.Adapter<AdapterEdicion.ViewHold
 
 
     @Override
-    public void onBindViewHolder(final ViewHolderEdicion holder, int position) {
+    public void onBindViewHolder(final ViewHolderEdicion holder, final int position) {
         holder.estilo.setText(listResumen.get(position).getEstilo());
         holder.marca.setText(listResumen.get(position).getMarca());
         holder.color.setText(listResumen.get(position).getColor());
@@ -135,8 +135,8 @@ public class AdapterEdicion extends RecyclerView.Adapter<AdapterEdicion.ViewHold
                                     Intent intent=new Intent(context,OrdenEspera.class);
                                     context.startActivity(intent);
                                 }
-                                Intent intent=new Intent(context,OrdenesEditar.class);
-                                context.startActivity(intent);
+                                removeItem(position);
+                              notifyDataSetChanged();
                             }
                         }).setNegativeButton("CANCELAR", new DialogInterface.OnClickListener() {
                     @Override
@@ -144,6 +144,7 @@ public class AdapterEdicion extends RecyclerView.Adapter<AdapterEdicion.ViewHold
                         dialog.cancel();
                     }
                 });
+
 
                 AlertDialog titulo=alerta.create();
                 titulo.setTitle("ELIMINAR ORDEN");
@@ -156,7 +157,14 @@ public class AdapterEdicion extends RecyclerView.Adapter<AdapterEdicion.ViewHold
         });
 
     }
-public int verificar(final ViewHolderEdicion holder){
+
+    public void removeItem(int position) {
+        this.listResumen.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, getItemCount() - position);
+    }
+
+    public int verificar(final ViewHolderEdicion holder){
         int id=0;
 
     ConexionSQLiteHelper conn = new ConexionSQLiteHelper(context, "db tienda", null, 1);

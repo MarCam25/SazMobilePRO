@@ -40,6 +40,7 @@ import com.example.saz.saz.conexion.ConexionSQLiteHelper;
 import com.example.saz.saz.conexion.ConexionSqlServer;
 import com.example.saz.saz.utilidades.ModeloTienda;
 import com.example.saz.saz.utilidades.Utilidades;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -58,12 +59,10 @@ public class menu extends AppCompatActivity
     String usuario, numeroUsuario, nombreUsuario;
 ModeloUsuario mu=new ModeloUsuario();
     String empresa;
-    private TimerTask tarea;
+
     String nombreTieda;
 
     String dispositivo;
-
-
 
     ConexionSQLiteHelper conn=new ConexionSQLiteHelper(this,"db tienda",null,1);
 
@@ -79,15 +78,15 @@ ModeloTienda mt=new ModeloTienda();
     String areaID = null;
     int tipo=0;
 
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+      //  FirebaseInstanceId.getInstance().getInstanceId();
+
         obtenerLineaConexion();
         consultarT();
         getArea();
@@ -97,12 +96,6 @@ ModeloTienda mt=new ModeloTienda();
         setSupportActionBar(toolbar);
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         usuario= getIntent().getStringExtra("Usuario");
-
-
-
-
-
-
 
         View headerView = navigationView.getHeaderView(0);
         TextView navUsername = (TextView) headerView.findViewById(R.id.usu);
@@ -119,17 +112,17 @@ ModeloTienda mt=new ModeloTienda();
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-
         navigationView.setNavigationItemSelectedListener(this);
-
-
 
         getSupportActionBar().setTitle("Saz Mobile APP -Inicio- ");
 
+
+
         if(Principal.location==1){
+
             getSupportActionBar().setTitle("Comandero");
             fm.beginTransaction().replace(R.id.contenedorMenu, new Coman()).commit();
-            Principal.location=0;
+
         }else if(Principal.location==2){
             getSupportActionBar().setTitle("Venta");
             fm.beginTransaction().replace(R.id.contenedorMenu, new Venta()).commit();
@@ -139,10 +132,14 @@ ModeloTienda mt=new ModeloTienda();
             getSupportActionBar().setTitle("Configuración");
             fm.beginTransaction().replace(R.id.contenedorMenu, new  Ajustes()).commit();
             Principal.location=0;
-
+        }else if(Principal.location==4){
+            getSupportActionBar().setTitle("Registro de pedidos");
+            fm.beginTransaction().replace(R.id.contenedorMenu, new ConsultaF()).commit();
+            Principal.location=0;
         }
 
-        IniciarTemporizador();
+
+
 
 
     }
@@ -162,7 +159,6 @@ ModeloTienda mt=new ModeloTienda();
     public void obtenerLineaConexion() {
         String empress = getIntent().getStringExtra("Empresa");
         me = new ModeloEmpresa();
-
         {
             try {
                 Statement st = conex.conexionBD().createStatement();
@@ -177,6 +173,7 @@ ModeloTienda mt=new ModeloTienda();
                     me.setEmpresa(rs.getString("empresa"));
 
                 }
+                st.close();
 
 
             } catch (Exception e) {
@@ -184,11 +181,6 @@ ModeloTienda mt=new ModeloTienda();
             }
         }
     }
-
-
-
-
-
 
     @Override
     public void onBackPressed() {
@@ -224,7 +216,7 @@ ModeloTienda mt=new ModeloTienda();
             Statement st = bdc.conexionBD(me.getServer(),me.getBase(),me.getUsuario(),me.getPass()).createStatement();
            String sql="insert into logdia (nombre, fecha, tienda, hora,origen, tipo, idEmpleado, caja, id, llave, autoriza) values ('"+nombreUsuario+"', getDate(),1,'"+FechaHora[1]+"', 1, 'SALIDA',"+numeroUsuario+",1 ,92911, newId(), 0 );";
             st.executeUpdate(sql);
-
+            st.close();
 
 
         } catch (Exception e) {
@@ -243,14 +235,10 @@ ModeloTienda mt=new ModeloTienda();
 
             while (rs.next()) {
 
-
                 nombreUsuario=rs.getString(1);
                 numeroUsuario=rs.getString(2);
-
-
             }
-
-
+            st.close();
         } catch (SQLException e) {
             e.getMessage();
             Toast.makeText(getApplicationContext(), "Error al obtener datos del usuario", Toast.LENGTH_SHORT).show();
@@ -265,7 +253,6 @@ ModeloTienda mt=new ModeloTienda();
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-
 
         return super.onOptionsItemSelected(item);
     }
@@ -286,13 +273,12 @@ ModeloTienda mt=new ModeloTienda();
         }else{
                 Toast toast = Toast.makeText(getApplicationContext(), "No tienes acceso a esta opción", Toast.LENGTH_LONG);
                 TextView x = (TextView) toast.getView().findViewById(android.R.id.message);
-                x.setTextColor(Color.YELLOW); toast.show();
+                x.setTextColor(Color.BLACK); toast.show();
             }
         } else if (id == R.id.generales) {
 
             getSupportActionBar().setTitle("Configuración");
             fm.beginTransaction().replace(R.id.contenedorMenu, new Ajustes()).commit();
-
         } else if (id == R.id.nav_manage) {
             getSupportActionBar().setTitle("Comandero");
             mismoDispositivo();
@@ -304,14 +290,11 @@ ModeloTienda mt=new ModeloTienda();
             getSupportActionBar().setTitle("Vender");
             fm.beginTransaction().replace(R.id.contenedorMenu, new Venta()).commit();
         }else if (id == R.id.nav_cerrar) {
+//            temporizadorComandero.cancel();
             getNameUser();
-          insertarSalida();
-          //cerramos secion en la app
+            insertarSalida();
             Intent  intent= new Intent(getApplicationContext(), Principal.class);
-            //Cancelamos los hilos de notificaciones
-
             startActivity(intent);
-
         }
 
 
@@ -337,126 +320,8 @@ ModeloTienda mt=new ModeloTienda();
 
           }
 
-    private void IniciarTemporizador() {
-        try {
-            temporizadorComandero = new Timer();
-            tarea = new TimerTask() {
-                public void run() {
-                    handler.post(new Runnable() {
-                        public void run() {
-                            if (ConsultaF.not == true) {
-
-                            }
 
 
-                            if(tipo==2) {
-                                if(tipo==2) {
-                                    consultarProductosComandero();
-                                }
-                            }else if(tipo==1){
-                                if(tipo==1) {
-                                    consultarProductosVendedor();
-                                }
-                            }
-
-
-
-                           /* notific = true;
-                            vuelt = true;
-
-                            ConsultarNuevosRegistros();
-
-
-                            if (cantidadRegistros > Principal.hiloCantidadC) {
-                                mandarNotificacione();
-                                Principal.hiloCantidadC = cantidadRegistros;
-                            } else {
-                                Principal.hiloCantidadC = cantidadRegistros;
-                            }
-                            */
-
-                        }
-                    });
-                }
-            };
-            temporizadorComandero.schedule(tarea, 0, 30000);
-        } catch (RuntimeException r) {
-
-        } catch (Exception e) {
-
-        }
-    }
-
-    public void consultarProductosComandero() {
-        String idTienda = getTienda();
-        ModeloNumeroOrden mno = new ModeloNumeroOrden();
-
-        String idArea=areaID;
-        String llaveArea="";
-        int cont=0;
-        try {
-            String tienda = ultimaVez();
-            Statement st = bdc.conexionBD(me.getServer(), me.getBase(), me.getUsuario(), me.getPass()).createStatement();
-            String sql = "select c.llave from comanderoDet c inner join UbicacionesProductos u on c.barcode = u.barcode inner join ZonasDeSurtido z on u.idZona = z.idZona where z.idArea = "+idArea+
-                    " and c.status = 0";
-            ResultSet rs = st.executeQuery(sql);
-
-
-            while (rs.next()) {
-                cont++;
-                llaveArea+="'"+rs.getString(1)+"',";
-
-
-            }
-            llaveArea=llaveArea.substring(0,llaveArea.length()-1);
-            getNotificacion(cont);
-
-
-
-        } catch (SQLException e) {
-
-        } catch (NullPointerException nu) {
-
-        } catch (RuntimeException r) {
-
-        }
-        actualizarProductoComandero(llaveArea);
-    }
-
-    public void consultarProductosVendedor(){
-        String idTienda = getTienda();
-        ModeloNumeroOrden mno = new ModeloNumeroOrden();
-
-        String idArea=areaID;
-        String llaveArea="";
-        int cont=0;
-        try {
-            String tienda = ultimaVez();
-            Statement st = bdc.conexionBD(me.getServer(), me.getBase(), me.getUsuario(), me.getPass()).createStatement();
-            String sql = "select cd.llave from comanderoDet cd inner join comandero c on c.numero = cd.numero  where c.empleado  = '"+mu.getNombre()+"' and cd.status = 1";
-            ResultSet rs = st.executeQuery(sql);
-
-
-            while (rs.next()) {
-                cont++;
-                llaveArea+="'"+rs.getString(1)+"',";
-
-
-            }
-            llaveArea=llaveArea.substring(0,llaveArea.length()-1);
-            getNotificacionVendedor(cont);
-
-
-
-        } catch (SQLException e) {
-
-        } catch (NullPointerException nu) {
-
-        } catch (RuntimeException r) {
-
-        }
-        actualizarProductoVendedor(llaveArea);
-    }
 
     public String getTienda() {
         String tienda = "";
@@ -482,8 +347,6 @@ ModeloTienda mt=new ModeloTienda();
     }
 
     public void getArea() {
-
-
         try {
             ConexionSQLiteHelper conn = new ConexionSQLiteHelper(getApplicationContext(), "db tienda", null, 1);
             SQLiteDatabase db = conn.getReadableDatabase();
@@ -497,8 +360,8 @@ ModeloTienda mt=new ModeloTienda();
         } catch (RuntimeException r) {
 
         }
-
     }
+
 
     public String ultimaVez() {
 
@@ -520,131 +383,14 @@ ModeloTienda mt=new ModeloTienda();
 
 
 
-    public void getNotificacion(int cont) {
-        Principal.location = 1;
-        notification("Nuevos pedidos", "Tienes  "+cont+" Productos por surtir ", getApplicationContext());
-    }
-
-    public void getNotificacionVendedor(int cont) {
-        Principal.location = 2;
-        notification("Productos Surtidos", "Tienes  "+cont+" Productos surtidos ", getApplicationContext());
-    }
-    public void notification(String title, String message, Context context) {
-        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-
-        int notificationId = createID();
-        String channelId = "channel-id";
-        String channelName = "Channel Name";
-        int importance = NotificationManager.IMPORTANCE_HIGH;
-
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            @SuppressLint("WrongConstant") NotificationChannel mChannel = new NotificationChannel(
-                    channelId, channelName, importance);
-            notificationManager.createNotificationChannel(mChannel);
-        }
-
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, channelId)
-                .setSmallIcon(R.drawable.logotipo)
-                .setContentTitle(title)
-                .setPriority(Notification.PRIORITY_HIGH)
-                .setContentText(message)
-                .setVibrate(new long[]{100, 250})
-                .setLights(Color.YELLOW, 500, 5000)
-                .setAutoCancel(true)
-                .setColor(ContextCompat.getColor(context, R.color.colorPrimary));
 
 
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
-
-        stackBuilder.addNextIntent(new Intent(context, menu.class));
-        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-        mBuilder.setContentIntent(resultPendingIntent);
-
-        notificationManager.notify(notificationId, mBuilder.build());
-
-    }
-
-    public int createID() {
-        Date now = new Date();
-        int id = Integer.parseInt(new SimpleDateFormat("ddHHmmss", Locale.FRENCH).format(now));
-        return id;
-
-    }
-
-    public void actualizarProductoComandero(String llaveArea){
-       // String idTienda = getTienda();
-       // ModeloNumeroOrden mno = new ModeloNumeroOrden();
-       // String area = areaID;
-        //String idArea=consultarIDArea();
-
-        try {
-            String tienda = ultimaVez();
-            Statement st = bdc.conexionBD(me.getServer(), me.getBase(), me.getUsuario(), me.getPass()).createStatement();
-            String sql = "update comanderoDet set [status] = 6 where llave in ("+llaveArea+")";
-            st.executeQuery(sql);
 
 
-        } catch (SQLException e) {
-
-        } catch (NullPointerException nu) {
-
-        } catch (RuntimeException r) {
-
-        }
-
-    }
-
-    public void actualizarProductoVendedor(String llaveArea){
-        // String idTienda = getTienda();
-        // ModeloNumeroOrden mno = new ModeloNumeroOrden();
-        // String area = areaID;
-        //String idArea=consultarIDArea();
-
-        try {
-            String tienda = ultimaVez();
-            Statement st = bdc.conexionBD(me.getServer(), me.getBase(), me.getUsuario(), me.getPass()).createStatement();
-            String sql = "update comanderoDet set [status] = 7 where llave in ("+llaveArea+")";
-            st.executeQuery(sql);
 
 
-        } catch (SQLException e) {
-
-        } catch (NullPointerException nu) {
-
-        } catch (RuntimeException r) {
-
-        }
-
-    }
-    public String  consultarIDArea() {
-        String idTienda = getTienda();
-        ModeloNumeroOrden mno = new ModeloNumeroOrden();
-        String area = areaID;
-        String idArea = "";
-
-        try {
-            String tienda = ultimaVez();
-            Statement st = bdc.conexionBD(me.getServer(), me.getBase(), me.getUsuario(), me.getPass()).createStatement();
-            String sql = "Select idarea from areasdecontrol where nombre='" + area + "' and idTienda=" + idTienda;
-            ResultSet rs = st.executeQuery(sql);
 
 
-            while (rs.next()) {
-                idArea=rs.getString(1);
-
-            }
-
-
-        } catch (SQLException e) {
-
-        } catch (NullPointerException nu) {
-
-        } catch (RuntimeException r) {
-
-        }
-
-        return idArea;
-    }
 
 
     public void getNameTienda(){
@@ -654,20 +400,20 @@ ModeloTienda mt=new ModeloTienda();
             String sql="select nombre from tiendas where numero='"+ultimaVez()+"';";
             ResultSet rs = st.executeQuery(sql);
 
-
             while (rs.next()) {
-
 
                 nombreTieda=rs.getString(1);
 
-
-
             }
+            st.close();
 
 
         } catch (SQLException e) {
             e.getMessage();
             Toast.makeText(getApplicationContext(), "Error al obtener datos del usuario", Toast.LENGTH_SHORT).show();
+        }catch (Exception es){
+            es.getMessage();
+
         }
     }
 
@@ -682,6 +428,7 @@ ModeloTienda mt=new ModeloTienda();
             while(rs.next()){
                 id=rs.getString(1);
             }
+            st.close();
 
         }catch (Exception e ){
             e.getMessage();
@@ -703,6 +450,7 @@ ModeloTienda mt=new ModeloTienda();
             while(rs.next()){
                 dispositivo=rs.getString(1);
             }
+            st.close();
 
         }catch (Exception e ){
             e.getMessage();
@@ -713,32 +461,28 @@ ModeloTienda mt=new ModeloTienda();
 
             String predeterminada = dispositivo;
 
-            //declaramos una palabra de entrada
             String entrada = marca+"-"+serie+"-"+modelo;
 
-            //variable usada para verificar si las palabras son iguales
+
             String aux = "";
 
-            //se verifica que ambas palabras tengan la misma longitud
-            //si no es asi no se pueden comparar
+
             if (entrada!= null) {
                 if (predeterminada.length() == entrada.length()) {
 
                     for (int i = 0; i < predeterminada.length(); i++) {
 
-                        //verificamos si el primer caracter de predeterminada
-                        //es igual al primero de entrada
+
                         if (predeterminada.charAt(i) == entrada.charAt(i)) {
-                            //si es asi guardamos ese concatenamos el caracter a la variable aux
+
                             aux += predeterminada.charAt(i);
                         }
                     }
 
-                    //al finalizar el bucle verificamos si la variable aux es
-                    //igual a la predeterminada
+
                     if (aux.equals(predeterminada)) {
 
-                        //no hay pedo
+
 
                     } else {
 
@@ -780,13 +524,13 @@ ModeloTienda mt=new ModeloTienda();
                     android.app.AlertDialog titulo=alerta.create();
                     titulo.setTitle("Aviso");
                     titulo.show();
-
-
                 }
             }
-
         }
     }
+
+
+
 
 
 }

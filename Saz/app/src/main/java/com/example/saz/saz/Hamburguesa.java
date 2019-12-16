@@ -64,8 +64,17 @@ public class Hamburguesa extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Registro de pedidos");
-        fm.beginTransaction().replace(R.id.contenedor, new ConsultaF()).commit();
+        getSupportActionBar().setTitle("SazMobile Pro -Registro de pedidos-");
+
+
+        if(Principal.busqueda2==true){
+            fm.beginTransaction().replace(R.id.contenedor, new Consulta_Marca()).commit();
+        }else  {
+            Principal.passConsulta=false;
+            fm.beginTransaction().replace(R.id.contenedor, new ConsultaF()).commit();
+        }
+
+
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         View headerView = navigationView.getHeaderView(0);
         TextView navUsername = (TextView) headerView.findViewById(R.id.usu);
@@ -143,6 +152,9 @@ public class Hamburguesa extends AppCompatActivity
         }
 
     }
+
+
+
     public void compararHoras(Time horaAct,Time horaMas, String numero){
 
         if(actual.compareTo(horaMas)>=0){
@@ -261,6 +273,7 @@ public class Hamburguesa extends AppCompatActivity
             progressDialog.setMessage("Reiniciando...");
             progressDialog.show();
 
+
             consultarHora();
             verificarTiempo();
             progressDialog.show();
@@ -280,8 +293,12 @@ public class Hamburguesa extends AppCompatActivity
         } else if (id == R.id.nav_send) {
 
         }else if(id == R.id.RegistrarPedido){
-            fm.beginTransaction().replace(R.id.contenedor, new ConsultaF()).commit();
-
+            if(Principal.busqueda2==true){
+                fm.beginTransaction().replace(R.id.contenedor, new Consulta_Marca()).commit();
+            }else {
+                Principal.passConsulta=false;
+                fm.beginTransaction().replace(R.id.contenedor, new ConsultaF()).commit();
+            }
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

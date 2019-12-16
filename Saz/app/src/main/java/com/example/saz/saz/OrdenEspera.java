@@ -106,18 +106,6 @@ if(pass==true){
     }
 
 
-    public static void GuardarEnSqlRemoto(){
-      /*  try {
-
-            Statement st = bdc.conexionBD(me.getServer(),me.getBase(),me.getUsuario(),me.getPass()).createStatement();
-            String sql="insert into comandero(numero,Tienda,Cliente,fecha,total,ubicacion,[status],pares,empleado,impreso,Llave) values ('"+idFecha+"',"+listado+",'"+clienteTXT.getText()+"',getDate(),"+pre+",'-1',1,"+up+","+numeroUsuario+",0,newId());";
-            st.executeUpdate(sql);
-
-        } catch (Exception e) {
-         //   Toast.makeText(, "Error en comandero", Toast.LENGTH_SHORT).show();
-        }*/
-    }
-
 
 
 

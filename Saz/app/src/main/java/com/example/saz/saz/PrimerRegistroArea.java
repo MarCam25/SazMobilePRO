@@ -74,6 +74,7 @@ public class PrimerRegistroArea extends AppCompatActivity {
                 zonas=rs.getString(1);
 
             }
+            st.close();
 
 
         } catch (Exception e) {
@@ -97,6 +98,7 @@ public class PrimerRegistroArea extends AppCompatActivity {
             Statement st = bdc.conexionBD(me.getServer(),me.getBase(),me.getUsuario(),me.getPass()).createStatement();
             String sql="insert into AreasDeControl (idTienda,nombre)values('"+tienda+"','"+zona.getText()+"');";
             st.executeUpdate(sql);
+            st.close();
 
 
         } catch (Exception e) {

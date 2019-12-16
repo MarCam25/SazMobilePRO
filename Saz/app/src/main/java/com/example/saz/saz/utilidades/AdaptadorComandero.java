@@ -35,7 +35,7 @@ public AdaptadorComandero(ArrayList<Comandero> listComandero){
 
 
     @Override
-    public void onBindViewHolder(final ViewHolderComandero holder, int position) {
+    public void onBindViewHolder(final ViewHolderComandero holder,final int position) {
 
         holder.numero.setText(listComandero.get(position).getNumero());
         holder.cliente.setText(listComandero.get(position).getCliente());
@@ -48,11 +48,13 @@ public AdaptadorComandero(ArrayList<Comandero> listComandero){
             @Override
             public void onClick(View v) {
 
+
                 ModeloNumeroOrden mu=new ModeloNumeroOrden();
                 mu.setNumeroOrden(holder.numero.getText().toString());
-                Intent lista = new Intent(holder.context, ListaComandero.class);
-                holder.context.startActivity(lista);
-
+                //Intent lista = new Intent(holder.context, ListaComandero.class);
+                //holder.context.startActivity(lista);
+                removeItem(position);
+                notifyDataSetChanged();
 
             }
         });
@@ -60,6 +62,14 @@ public AdaptadorComandero(ArrayList<Comandero> listComandero){
 
 
     }
+
+    public void removeItem(int position) {
+        this.listComandero.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, getItemCount() - position);
+    }
+
+
 
 
     @Override

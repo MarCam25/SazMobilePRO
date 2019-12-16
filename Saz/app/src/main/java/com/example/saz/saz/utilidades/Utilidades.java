@@ -89,12 +89,11 @@ public class Utilidades {
             +CAMPO_TEMPORADA+" TEXT, "+CAMPO_CLASIFICACION+" TEXT, "+CAMPO_SUBLINEA+" TEXT, "+CAMPO_SUELA+" TEXT, "+CAMPO_TACON+" TEXT, "+CAMPO_COLOR+" TEXT, "
             +CAMPO_ACABADO+" TEXT,"+CAMPO_CORRIDA+" TEXT )";
 
-
     public static final String TABLA_CHECKB="checkBuscador";
     public static final String CAMPO_IDCHECKB="id";
     public static final String CAMPO_BUSCADOR="buscador";
-    public static final String CREAR_TABLA_CHECKB="CREATE TABLE "+TABLA_CHECKB+"( "+CAMPO_IDCHECKB+" INTEGER PRIMARY KEY AUTOINCREMENT,"+CAMPO_BUSCADOR+" TEXT )";
-
+    public static final String CAMPO_BUSCADOR2="buscador2";
+    public static final String CREAR_TABLA_CHECKB="CREATE TABLE "+TABLA_CHECKB+"( "+CAMPO_IDCHECKB+" INTEGER PRIMARY KEY AUTOINCREMENT,"+CAMPO_BUSCADOR+" TEXT,"+CAMPO_BUSCADOR2+" TEXT  )";
 
 
 }

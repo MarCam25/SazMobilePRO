@@ -84,8 +84,8 @@ public class PaginaPrincipal extends Fragment{
 
        numeroTienda=rs.getString(1);
 
-
         }
+        st.close();
 
         // Toast.makeText(Principal.this,"Inicio de sesion Exitosa...!!!: " + empresa, Toast.LENGTH_LONG).show();
     } catch (Exception e) {
@@ -105,8 +105,8 @@ public class PaginaPrincipal extends Fragment{
                 listaTiendas.add(rs.getString(1));
 
 
-
             }
+            st.close();
 
             // Toast.makeText(Principal.this,"Inicio de sesion Exitosa...!!!: " + empresa, Toast.LENGTH_LONG).show();
         } catch (Exception e) {
@@ -132,6 +132,7 @@ public class PaginaPrincipal extends Fragment{
                     me.setEmpresa(rs.getString("empresa"));
 
                 }
+                st.close();
 
                 // Toast.makeText(Principal.this,"Inicio de sesion Exitosa...!!!: " + empresa, Toast.LENGTH_LONG).show();
             } catch (Exception e) {

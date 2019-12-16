@@ -56,9 +56,7 @@ public class Venta extends Fragment {
         }else if (tipo==1){
             mostrarVentas();
         }else{
-            Toast toast = Toast.makeText(getActivity(), "No tienes acceso al contenido de esta pantalla", Toast.LENGTH_LONG);
-            TextView x = (TextView) toast.getView().findViewById(android.R.id.message);
-            x.setTextColor(Color.YELLOW); toast.show();
+             Toast.makeText(getActivity(), "No tienes acceso al contenido de esta pantalla", Toast.LENGTH_LONG).show();
         }
 
 
@@ -86,9 +84,8 @@ public class Venta extends Fragment {
                 comandero.setEmpleado(rs.getString(5));
 
                 listaComandero.add(comandero);
-
-
             }
+            st.close();
 
             Toast.makeText(getActivity(),""+mensaje,Toast.LENGTH_LONG).show();
 
@@ -102,8 +99,8 @@ public class Venta extends Fragment {
         String mensaje="No hay productos";
         try {
             Statement st = bdc.conexionBD(me.getServer(),me.getBase(),me.getUsuario(),me.getPass()).createStatement();
-
-            ResultSet rs = st.executeQuery("select cd.numero, c.cliente, cast(Sum(pr.precio - (pr.precio * (pr.descto/100))) as decimal(8,2)) as total, count(cd.Llave) as pares, c.empleado from comanderoDet cd inner join comandero c on cd.numero = c.numero inner join precios pr on cd.barcode = pr.barcode and cd.talla =  pr.TALLA where c.empleado = '"+mu.getNombre()+"' and cd.status = 7 group by cd.numero, c.Cliente, c.empleado");
+            String sql="select cd.numero, c.cliente, cast(Sum(pr.precio - (pr.precio * (pr.descto/100))) as decimal(8,2)) as total, count(cd.Llave) as pares, c.empleado from comanderoDet cd inner join comandero c on cd.numero = c.numero inner join precios pr on cd.barcode = pr.barcode and cd.talla =  pr.TALLA where c.empleado = '"+getIdUsuario()+"' and cd.status = 1 group by cd.numero, c.Cliente, c.empleado";
+            ResultSet rs = st.executeQuery(sql);
 
             Comandero comandero=null;
             while (rs.next()) {
@@ -117,11 +114,8 @@ public class Venta extends Fragment {
                 comandero.setEmpleado(rs.getString(5));
 
                 listaComandero.add(comandero);
-
-
-
-
             }
+            st.close();
 
             Toast.makeText(getActivity(),""+mensaje,Toast.LENGTH_LONG).show();
 
@@ -164,6 +158,7 @@ public class Venta extends Fragment {
                 area = (rs.getInt(1));
 
             }
+            st.close();
 
         } catch (SQLException e) {
         } catch (NullPointerException nu) {
@@ -188,6 +183,7 @@ public class Venta extends Fragment {
                 idUsuario = (rs.getString(1));
 
             }
+            st.close();
 
         } catch (SQLException e) {
         } catch (NullPointerException nu) {

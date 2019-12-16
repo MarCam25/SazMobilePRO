@@ -17,6 +17,11 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.saz.saz.conexion.ConexionBDCliente;
 import com.example.saz.saz.conexion.ConexionSQLiteHelper;
 import com.example.saz.saz.ConsultaF;
@@ -27,13 +32,17 @@ import com.example.saz.saz.OrdenesEditar;
 import com.example.saz.saz.R;
 import com.example.saz.saz.entidades.Comandero;
 
+import org.json.JSONObject;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 public class AdapterDatos extends RecyclerView.Adapter<AdapterDatos.ViewHolderDatos> {
     String idNUmero;
@@ -41,6 +50,9 @@ public class AdapterDatos extends RecyclerView.Adapter<AdapterDatos.ViewHolderDa
     ArrayList<Comandero> listComandero;
     String norden;
     String hora;
+    String barcodeToken;
+    String tiendaToken;
+    String cantidadToken;
 
 
     public AdapterDatos(ArrayList<Comandero> listComandero) {
@@ -57,7 +69,7 @@ public class AdapterDatos extends RecyclerView.Adapter<AdapterDatos.ViewHolderDa
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolderDatos holder, int position) {
+    public void onBindViewHolder(final ViewHolderDatos holder, final int position) {
         holder.numero.setText(listComandero.get(position).getNumero());
         holder.cliente.setText(listComandero.get(position).getCliente());
         holder.total.setText(listComandero.get(position).getTotal());
@@ -76,6 +88,8 @@ public class AdapterDatos extends RecyclerView.Adapter<AdapterDatos.ViewHolderDa
                 progressDialog.setIcon(R.mipmap.ic_launcher);
                 progressDialog.setMessage("Cargando...");
                 progressDialog.show();
+
+
                 ModeloNumeroOrden mno=new ModeloNumeroOrden();
                 mno.setNumeroOrden(holder.idOrden.getText().toString());
 
@@ -93,6 +107,8 @@ public class AdapterDatos extends RecyclerView.Adapter<AdapterDatos.ViewHolderDa
                 progressDialog.setIcon(R.mipmap.ic_launcher);
                 progressDialog.setMessage("Cargando...");
                 progressDialog.show();
+
+
 
                 Toast toast = Toast.makeText(holder.context, "La orden finalizó y pasó al comandero", Toast.LENGTH_LONG);
                 TextView x = (TextView) toast.getView().findViewById(android.R.id.message);
@@ -119,16 +135,14 @@ public class AdapterDatos extends RecyclerView.Adapter<AdapterDatos.ViewHolderDa
                     String impreso=cursor.getString(7);
                     insertComandero(status, cliente, empleado, norden, total, pares, impreso);
 
-
-
-
                 }
                 insertarComanderoLog();
                consultarPedidos(holder);
+
                 update(holder);
                 cursor.close();
                 db.close();
-
+                consultaParaBarcode(holder);
                 Intent intent = new Intent(holder.context, OrdenEspera.class);
                 holder.context.startActivity(intent);
 
@@ -152,9 +166,8 @@ public class AdapterDatos extends RecyclerView.Adapter<AdapterDatos.ViewHolderDa
 
                                 consultarDevoluciones(holder);
                                 cancelar(holder);
-                                Intent intent = new Intent(holder.context, OrdenEspera.class);
-                                holder.context.startActivity(intent);
-
+                                removeItem(position);
+                                notifyDataSetChanged();
                             }
                         }).setNegativeButton("CANCELAR", new DialogInterface.OnClickListener() {
                     @Override
@@ -172,6 +185,11 @@ public class AdapterDatos extends RecyclerView.Adapter<AdapterDatos.ViewHolderDa
         });
 
 
+    }
+    public void removeItem(int position) {
+        this.listComandero.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, getItemCount() - position);
     }
     public void consultarDevoluciones(final ViewHolderDatos holder){
 
@@ -194,45 +212,6 @@ public class AdapterDatos extends RecyclerView.Adapter<AdapterDatos.ViewHolderDa
         }
 
     }
-
-/*
-    public void updateUbicacion(final ViewHolderDatos holder){
-        ubicacionEstilo()
-
-        try {
-            ConexionBDCliente bdc=new ConexionBDCliente();
-            ModeloEmpresa me=new ModeloEmpresa();
-
-            Statement st = bdc.conexionBD(me.getServer(), me.getBase(), me.getUsuario(), me.getPass()).createStatement();
-            String query="update comanderoDet set ubicacion='' where numero=";
-            st.executeUpdate(query);
-
-
-
-        } catch (Exception e) {
-
-        }
-    }
-
-
-    public String ubicacionEstilo(String estilo){
-        try {
-            ConexionBDCliente bdc=new ConexionBDCliente();
-            ModeloEmpresa me=new ModeloEmpresa();
-
-            Statement st = bdc.conexionBD(me.getServer(), me.getBase(), me.getUsuario(), me.getPass()).createStatement();
-            String query="update comanderoDet set ubicacion='' where numero=";
-            st.executeUpdate(query);
-
-
-
-        } catch (Exception e) {
-
-        }
-
-
-*/
-
 
 
 
@@ -278,7 +257,7 @@ public class AdapterDatos extends RecyclerView.Adapter<AdapterDatos.ViewHolderDa
 
             try {
                 Statement st = bdc.conexionBD(me.getServer(),me.getBase(),me.getUsuario(),me.getPass()).createStatement();
-                String query="INSERT INTO comandero(numero,Tienda,Cliente,fecha,total,[status],pares,empleado,impreso,Llave) VALUES ('"+norden+"',"+ConsultaF.listado+",'"+cliente+"',getDate(),"+total+","+status+","+pares+",'"+empleado+"',"+impreso+",newId())";
+                String query="INSERT INTO comandero(numero,Tienda,Cliente,fecha,total,[status],pares,empleado,impreso,Llave) VALUES ('"+norden+"',"+ConsultaF.listado+",'"+cliente+"',getDate(),"+total+",0,"+pares+",'"+empleado+"',"+impreso+",newId())";
                 ResultSet rs = st.executeQuery(query);
 
 
@@ -318,6 +297,8 @@ public class AdapterDatos extends RecyclerView.Adapter<AdapterDatos.ViewHolderDa
 
         ConexionBDCliente bdc=new ConexionBDCliente();
         ModeloEmpresa me=new ModeloEmpresa();
+
+        tiendaToken=tienda;
 
         try {
             Statement st = bdc.conexionBD(me.getServer(),me.getBase(),me.getUsuario(),me.getPass()).createStatement();
@@ -367,6 +348,83 @@ for(int i=0;i<cantidad;i++) {
         }
 
     }
+
+    public void consultaParaBarcode(final ViewHolderDatos holder) {
+
+        try {
+            ConexionBDCliente bdc = new ConexionBDCliente();
+            ModeloEmpresa me = new ModeloEmpresa();
+
+            Statement st = bdc.conexionBD(me.getServer(), me.getBase(), me.getUsuario(), me.getPass()).createStatement();
+            String sql = "SELECT barcode,COUNT(*) FROM comanderoDet where numero=" + holder.numero.getText() + "  GROUP BY barcode HAVING COUNT(*)>0;\n";
+            ResultSet rs = st.executeQuery(sql);
+            while (rs.next()) {
+                barcodeToken = rs.getString(1);
+                cantidadToken = rs.getString(2);
+                consuktarUsuarioToken(holder);
+            }
+
+        }catch (SQLException e){
+            e.getMessage();
+        }
+
+    }
+
+
+    public void consuktarUsuarioToken(final ViewHolderDatos holder){
+
+        ConexionBDCliente bdc=new ConexionBDCliente();
+        ModeloEmpresa me=new ModeloEmpresa();
+
+        try {
+            Statement st = bdc.conexionBD(me.getServer(),me.getBase(),me.getUsuario(),me.getPass()).createStatement();
+            String query="select top 1 aa.token from articulo a inner join  UbicacionesProductos u on a.BARCODE = u.barcode inner join ZonasDeSurtido z on u.idZona = z.idZona inner join AreasAsignadas aa on z.idArea = aa.idArea where a.barcode = '"+barcodeToken+"' and aa.idtienda="+tiendaToken+" order by fecha desc, hora desc";
+            ResultSet rs = st.executeQuery(query);
+
+
+            while (rs.next()) {
+
+                String token=rs.getString(1);
+                post(holder,token);
+            }
+
+
+        } catch (Exception e) {
+
+
+        }
+
+
+    }
+
+    public void post(final ViewHolderDatos holder,String token){
+        String url = "http://sirupa.mine.nu:3000/api/firebase";
+
+        Map<String, String> params = new HashMap();
+        params.put("key", token);
+
+        params.put("noti", "Tienes "+cantidadToken+" producto por surtir");
+
+        JSONObject parameters = new JSONObject(params);
+
+        JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.POST, url, parameters, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                //TODO: handle success
+            }
+
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+                //TODO: handle failure
+            }
+        });
+
+        Volley.newRequestQueue(holder.context).add(jsonRequest);
+    }
+
+
 
 
 

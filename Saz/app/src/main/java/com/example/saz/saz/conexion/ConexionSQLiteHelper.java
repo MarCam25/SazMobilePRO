@@ -8,8 +8,6 @@ import com.example.saz.saz.utilidades.Utilidades;
 
 public class ConexionSQLiteHelper extends SQLiteOpenHelper {
 
-
-
     public ConexionSQLiteHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
     }
@@ -25,10 +23,8 @@ public class ConexionSQLiteHelper extends SQLiteOpenHelper {
         db.execSQL(Utilidades.CREAR_TABLA_AREA);
         db.execSQL(Utilidades.CREAR_TABLA_CHECKB);
         db.execSQL(Utilidades.CREAR_TABLA_SIMILAR);
-
-
-
     }
+
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {

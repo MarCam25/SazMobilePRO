@@ -60,9 +60,8 @@ public class AltaDeProducto extends AppCompatActivity {
 
 
 
-    public static boolean not=false;
 
-    GridView gridview;
+
 
 
     String idImagen;
@@ -78,7 +77,6 @@ public class AltaDeProducto extends AppCompatActivity {
     public static ConexionBDCliente bdc=new ConexionBDCliente();
     ConexionSqlServer conex=new ConexionSqlServer();
 
-    public static int up=0;
     public static String VarEstilo;
     static String  BarCodeFIN;
     static  String estiloBar="";
@@ -101,20 +99,20 @@ public class AltaDeProducto extends AppCompatActivity {
     ModeloTienda mt=new ModeloTienda();
 
 
-    long time =System.currentTimeMillis();
+
     String barcode;
 
 
     TextView precioTXT;
-    int index=0;
+
     Button btnBardoce;
 
 
     static String sku;
 
-    public static double  contenedor;
 
-    String point;
+
+
     private Spinner sp,sp3, sp4, sp5, punto,spZonas;
 
     public static TextView existenciasTXT, cantidadTXT, unidadesTXT, importeTXT,descuentoTXT,totalTXT;
@@ -124,13 +122,13 @@ public class AltaDeProducto extends AppCompatActivity {
 
     double r;
     static String in, finn, inc;
-    String estilo, color, acabado, marcas, linea, sublinea, temporada, descripcion, observaciones;
-    TextView pagina, basico, comprador, departamento, tacon, plantilla, forro, clasificacion, corrida, suela, ubicacion, ubicaTXT;
+    String estilo, color, acabado, marcas;
+    TextView  ubicaTXT;
 
 
     public static String listado;
 
-    RecyclerView recycler;
+
 
 
     static String idFecha;
@@ -182,7 +180,7 @@ public class AltaDeProducto extends AppCompatActivity {
         btnAgregar=(Button)findViewById(R.id.btnAgregar);
         btnMenos=(Button)findViewById(R.id.btnMenos);
         btnResumen=(Button)findViewById(R.id.btnResumen);
-        btnFinalizar=(Button)findViewById(R.id.btnFinalizar);
+        btnFinalizar=(Button)findViewById(R.id.btnFinalizarUbicar);
         btnBardoce=(Button)findViewById(R.id.btnBarCode);
 
         idPedido=(TextView)findViewById(R.id.idPedido);
@@ -202,14 +200,13 @@ public class AltaDeProducto extends AppCompatActivity {
         btnFinalizar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast toast = new Toast(getApplication());
-                pl.droidsonroids.gif.GifImageView view = new pl.droidsonroids.gif.GifImageView(getApplicationContext());
-                view.setImageResource(R.drawable.loading);
-                toast.setView(view);
-                toast.show();
+
 
 
                 UbicarProducto();
+                barco.setText("- - - - - - - - - - - - -");
+
+
 
                 sp2.setText(null);
                 spZonas.setAdapter(null);
@@ -244,17 +241,8 @@ public class AltaDeProducto extends AppCompatActivity {
 
                 ReinicarContadores();
 
-                Toast gif =new  Toast(getApplicationContext());
-                pl.droidsonroids.gif.GifImageView view=new  pl.droidsonroids.gif.GifImageView(getApplicationContext());
-                view.setImageResource(R.drawable.loading);
-                gif.setView(view);
-                gif.show();
 
-                Toast toaste =new  Toast(getApplicationContext());
-                pl.droidsonroids.gif.GifImageView viewe=new  pl.droidsonroids.gif.GifImageView(getApplicationContext());
-                view.setImageResource(R.drawable.loading);
-                toaste.setView(view);
-                toaste.show();
+
 
                 Toast toast = Toast.makeText(getApplicationContext(), "Cargando...", Toast.LENGTH_LONG);
                 TextView x = (TextView) toast.getView().findViewById(android.R.id.message);
@@ -479,6 +467,7 @@ public void mostrarZonas(){
             listaZon.add(rs.getString(1));
 
         }
+        st.close();
 
 
     } catch (Exception e) {
@@ -502,6 +491,7 @@ public void mostrarZonas(){
                     +listado+"','"+idZona+"','"+barco.getText().toString()+"') end";
 
             st.executeUpdate(sql);
+            st.close();
             updateUbica(idZona);
             Toast.makeText(getApplicationContext(), "Producto ha sido ubicado...!!!", Toast.LENGTH_LONG+100).show();
         } catch (Exception e) {
@@ -518,6 +508,7 @@ public void mostrarZonas(){
             String sql="UPDATE articulo set ubica='"+spZonas.getSelectedItem().toString()+"' where barcode='"+barco.getText().toString()+"'";
 
             st.executeUpdate(sql);
+            st.close();
 
             Toast.makeText(getApplicationContext(), "Producto ha sido ubicado...!!!", Toast.LENGTH_LONG+100).show();
         } catch (Exception e) {
@@ -536,6 +527,7 @@ public void mostrarZonas(){
                 numeroZona=rs.getString(1);
             }
 
+            st.close();
         } catch (Exception e) {
 
             Toast.makeText(this, "Error al obtener id de la zona", Toast.LENGTH_SHORT).show();
@@ -558,6 +550,7 @@ public void mostrarZonas(){
                 numero=rs.getString(1);
             }
 
+            st.close();
         } catch (Exception e) {
             Toast.makeText(getApplicationContext(), "Error al finalizar el pedido", Toast.LENGTH_SHORT).show();
         }
@@ -607,6 +600,7 @@ public void mostrarZonas(){
                 corridaBar=rs.getString(4);
             }
 
+            st.close();
             //
         } catch (SQLException e) {
             e.getMessage();
@@ -629,6 +623,7 @@ public void mostrarZonas(){
 
             }
 
+            st.close();
             //
         } catch (Exception e) {
 
@@ -652,6 +647,7 @@ public void mostrarZonas(){
 
             }
 
+            st.close();
             //
         } catch (Exception e) {
 
@@ -674,6 +670,7 @@ public void mostrarZonas(){
 
             }
 
+            st.close();
 
         } catch (Exception e) {
 
@@ -697,6 +694,7 @@ public void mostrarZonas(){
 
             }
 
+            st.close();
             // Toast.makeText(Principal.this,"Inicio de sesion Exitosa...!!!: " + empresa, Toast.LENGTH_LONG).show();
         } catch (Exception e) {
             Toast.makeText(getApplicationContext(), "Error en sp3", Toast.LENGTH_SHORT).show();
@@ -716,6 +714,7 @@ public void mostrarZonas(){
 
             }
 
+            st.close();
 
         } catch (Exception e) {
 
@@ -740,6 +739,7 @@ public void mostrarZonas(){
                 sp4.setId(rs.getInt(2));
             }
 
+            st.close();
             // Toast.makeText(Principal.this,"Inicio de sesion Exitosa...!!!: " + empresa, Toast.LENGTH_LONG).show();
         } catch (Exception e) {
             Toast.makeText(getApplicationContext(), "Error en sp4", Toast.LENGTH_SHORT).show();
@@ -763,6 +763,7 @@ public void mostrarZonas(){
 
             }
 
+            st.close();
             // Toast.makeText(Principal.this,"Inicio de sesion Exitosa...!!!: " + empresa, Toast.LENGTH_LONG).show();
         } catch (Exception e) {
             Toast.makeText(getApplicationContext(), "Error en sp4", Toast.LENGTH_SHORT).show();
@@ -785,6 +786,7 @@ public void mostrarZonas(){
 
             }
 
+            st.close();
 
         } catch (Exception e) {
 
@@ -806,6 +808,7 @@ public void mostrarZonas(){
                 listaCorrida.add(rs.getString(1));
                 sp5.setId(rs.getInt(2));
             }
+            st.close();
 
             // Toast.makeText(Principal.this,"Inicio de sesion Exitosa...!!!: " + empresa, Toast.LENGTH_LONG).show();
         } catch (Exception e) {
@@ -825,6 +828,7 @@ public void mostrarZonas(){
                 corridaCantidad++;
                 String f=(rs.getString(2));
             }
+            st.close();
 
             // Toast.makeText(Principal.this,"Inicio de sesion Exitosa...!!!: " + empresa, Toast.LENGTH_LONG).show();
         } catch (Exception e) {
@@ -838,7 +842,7 @@ public void mostrarZonas(){
         try {
 
             Statement st = bdc.conexionBD(me.getServer(),me.getBase(),me.getUsuario(),me.getPass()).createStatement();
-            String sql=" select corridas.id from corridas  inner join articulo on  corridas.id=articulo.corrida  where estilo='"+sp2.getText()+"' and color="+idColor+" and acabado="+idAcabado+" and marca="+idMarca;
+            String sql=" select corridas.id from corridas  inner join articulo on  corridas.id=articulo.corrida  where estilo='"+sp2.getText()+"' and color="+idColor+" and acabado="+idAcabado+" and marca="+idMarca +"and nombre='"+sp5.getSelectedItem()+"'";
             ResultSet rs = st.executeQuery(sql);
 
 
@@ -847,6 +851,7 @@ public void mostrarZonas(){
 
             }
 
+            st.close();
 
         } catch (Exception e) {
 
@@ -885,6 +890,7 @@ public void mostrarZonas(){
 
 
             }
+            st.close();
 
 
         } catch (Exception e) {
@@ -940,6 +946,7 @@ public void mostrarZonas(){
                 NombreUsuario=(rs.getString( 2));
             }
 
+            st.close();
 
         } catch (Exception e) {
             Toast.makeText(getApplicationContext(), "Error al optener usuario", Toast.LENGTH_SHORT).show();
@@ -962,6 +969,7 @@ public void mostrarZonas(){
 
             }
 
+            st.close();
 
         } catch (Exception e) {
 
@@ -1005,6 +1013,8 @@ public void mostrarZonas(){
 
 
             }
+
+            st.close();
 
             // Toast.makeText(Principal.this,"Inicio de sesion Exitosa...!!!: " + empresa, Toast.LENGTH_LONG).show();
         } catch (SQLException xe) {
@@ -1076,6 +1086,7 @@ public void mostrarZonas(){
 
 
             }
+            st.close();
 
             // Toast.makeText(Principal.this,"Inicio de sesion Exitosa...!!!: " + empresa, Toast.LENGTH_LONG).show();
         } catch (SQLException xe) {
@@ -1096,6 +1107,7 @@ public void mostrarZonas(){
             }
 
 
+            st.close();
         } catch (Exception e) {
 
         }
@@ -1103,39 +1115,7 @@ public void mostrarZonas(){
     }
 
 
-    public void notification(String title, String message, Context context) {
-        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        int notificationId = createID();
-        String channelId = "channel-id";
-        String channelName = "Channel Name";
-        int importance = NotificationManager.IMPORTANCE_MAX;
-
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            @SuppressLint("WrongConstant") NotificationChannel mChannel = new NotificationChannel(
-                    channelId, channelName, importance);
-            notificationManager.createNotificationChannel(mChannel);
-        }
-
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, channelId)
-                .setSmallIcon(R.drawable.logotipo)//R.mipmap.ic_launcher
-                .setContentTitle(title)
-                .setPriority(Notification.PRIORITY_MAX)
-                .setContentText(message)
-                .setVibrate(new long[]{100, 250})
-                .setLights(Color.YELLOW, 500, 5000)
-                .setAutoCancel(true)
-                .setColor(ContextCompat.getColor(context, R.color.colorPrimary));
-
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
-        Principal.location=2;
-        stackBuilder.addNextIntent(new Intent(context, menu.class));
-
-        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0,PendingIntent.FLAG_UPDATE_CURRENT);
-        mBuilder.setContentIntent(resultPendingIntent);
-
-        notificationManager.notify(notificationId, mBuilder.build());
-    }
 
     public int createID() {
         Date now = new Date();
@@ -1220,6 +1200,7 @@ public void mostrarZonas(){
 
             }
 
+            st.close();
             ubicaTXT.setText(mensaje);
         } catch (Exception e) {
 

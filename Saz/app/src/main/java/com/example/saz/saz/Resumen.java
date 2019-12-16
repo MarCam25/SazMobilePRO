@@ -1,5 +1,4 @@
 package com.example.saz.saz;
-
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -11,7 +10,6 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridView;
-
 import com.example.saz.saz.Modelo.ModeloDatos;
 import com.example.saz.saz.Modelo.ModeloEmpresa;
 import com.example.saz.saz.Modelo.ModeloResumen;
@@ -21,6 +19,9 @@ import com.example.saz.saz.conexion.ConexionSQLiteHelper;
 import com.example.saz.saz.utilidades.AdapterResumen;
 import com.example.saz.saz.utilidades.Utilidades;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 public class Resumen extends AppCompatActivity {
@@ -33,10 +34,8 @@ public class Resumen extends AppCompatActivity {
     ModeloUsuario mu=new ModeloUsuario();
     ModeloDatos md=new ModeloDatos();
        ArrayList<String> arrayList;
-
     RecyclerView recyclerView;
     ArrayList<ModeloResumen> listaResumen;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,33 +49,21 @@ public class Resumen extends AppCompatActivity {
         AdapterResumen adapter=new AdapterResumen(listaResumen);
         recyclerView.setAdapter(adapter);
 
-mostrar();
+    mostrar();
 
-fin.setOnClickListener(new View.OnClickListener() {
-    @Override
-    public void onClick(View v) {
-        crearOrden();
-        getDatosPedido();
-        Intent orden = new Intent(getApplicationContext(), OrdenEspera.class);
-        startActivity(orden);
-    }
-});
-
-
-
-
+    fin.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            crearOrden();
+            getDatosPedido();
+            Intent orden = new Intent(getApplicationContext(), OrdenEspera.class);
+            startActivity(orden);
+        }
+    });
 
 }
 
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if ((keyCode == KeyEvent.KEYCODE_BACK)) {
-            Intent intent = new Intent(getApplicationContext(), Hamburguesa.class);
 
-
-            startActivity(intent);
-        }
-        return true;
-    }
 
     public void mostrar(){
 
@@ -104,16 +91,7 @@ fin.setOnClickListener(new View.OnClickListener() {
             mr.setAcabado(cursor.getString(10));
 
 
-
-
-
-
-
             listaResumen.add(mr);
-
-
-
-
 
         }
     }
@@ -125,13 +103,33 @@ fin.setOnClickListener(new View.OnClickListener() {
         SQLiteDatabase db=conn.getWritableDatabase();
 
 
-        String sql="INSERT INTO  orden  (status, cliente, empleado, norden, total, pares, impreso) VALUES('"+0+"', '"+ConsultaF.clienteTXT.getText().toString()+"', '"+mu.getNombre()+"', '"+ConsultaF.idFecha+"','"+total+"','"+pares+"','"+0+"')";
+        String sql="INSERT INTO  orden  (status, cliente, empleado, norden, total, pares, impreso) VALUES('"+0+"', '"+ConsultaF.clienteTXT.getText().toString()+"', '"+consultarEmpleado()+"', '"+ConsultaF.idFecha+"','"+total+"','"+pares+"','"+0+"')";
         db.execSQL(sql);
-
-
 
     }
 
+    public String consultarEmpleado(){
+        String id="";
+        try {
+
+            Statement st = bdc.conexionBD(me.getServer(), me.getBase(), me.getUsuario(), me.getPass()).createStatement();
+            String sql = "select id from empleado where nombre='"+mu.getNombre()+"'";
+            ResultSet rs = st.executeQuery(sql);
+
+
+            while (rs.next()) {
+                id=(rs.getString(1));
+
+            }
+            st.close();
+
+
+
+
+        }catch (SQLException e) {
+        }
+        return id;
+    }
     public String sacarPares(){
         String pares="";
         ConexionSQLiteHelper conn = new ConexionSQLiteHelper(this, "db tienda", null, 1);
@@ -188,7 +186,7 @@ fin.setOnClickListener(new View.OnClickListener() {
             String total=(cursor.getString(8));
             String bar=(cursor.getString(9));
             String aca=(cursor.getString(10));
-            String ubica=(cursor.getString(12));
+            String ubica=(cursor.getString(13));
 
 
 
@@ -222,11 +220,22 @@ fin.setOnClickListener(new View.OnClickListener() {
         ConexionSQLiteHelper conn = new ConexionSQLiteHelper(this, "db tienda", null, 1);
         SQLiteDatabase db=conn.getWritableDatabase();
 
-
         int idOrden=getOrden();
+        String sql="INSERT INTO  pedido (estilo, imagen, talla, cantidad, marca, color, sub, total, barcode,acabado,ubicacion,idOrden) VALUES('"+estilo+"', '"+imagen+"', '"+talla+"', '"+cant+"','"+marca+"','"+color+"','"+sub+"','"+total+"','"+barcode+"','"+acabado+"','"+ubica+"',"+idOrden+")";
+        db.execSQL(sql);
 
-        db.execSQL("INSERT INTO  pedido (estilo, imagen, talla, cantidad, marca, color, sub, total, barcode,acabado,idOrden) VALUES('"+estilo+"', '"+imagen+"', '"+talla+"', '"+cant+"','"+marca+"','"+color+"','"+sub+"','"+total+"','"+barcode+"','"+acabado+"',"+idOrden+")");
 
+    }
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+        if ((keyCode == KeyEvent.KEYCODE_BACK)) {
+
+            Principal.location=4;
+            Intent intent=new Intent(getApplicationContext(),menu.class);
+            startActivity(intent);
+        }
+
+        return true;
 
     }
 

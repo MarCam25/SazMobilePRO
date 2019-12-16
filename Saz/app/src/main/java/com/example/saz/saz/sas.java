@@ -63,6 +63,7 @@ ConexionBDCliente bdc=new ConexionBDCliente();
 
                 }
 
+                st.close();
 
             } catch (Exception e) {
                 Toast.makeText(getApplicationContext(), "Error en la consulta", Toast.LENGTH_SHORT).show();
@@ -83,6 +84,7 @@ ConexionBDCliente bdc=new ConexionBDCliente();
 
                     Toast.makeText(getApplicationContext(), NombreEmpresa, Toast.LENGTH_SHORT).show();
                 }
+                st.close();
 
 
             } catch (Exception e) {

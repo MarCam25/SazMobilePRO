@@ -56,8 +56,11 @@ public class Area extends AppCompatActivity {
         zona=(EditText) findViewById(R.id.idZonaEd);
         Areas=(Spinner)findViewById(R.id.ListaArea);
         actualizar=(Button)findViewById(R.id.idActualizarZona);
+
         actualizar.setEnabled(false);
         guardar.setEnabled(true);
+
+
         listaZonas=new ArrayList();
 
         recyclerView=(RecyclerView)findViewById(R.id.recyZonas);
@@ -129,6 +132,7 @@ public class Area extends AppCompatActivity {
             Statement st = bdc.conexionBD(me.getServer(),me.getBase(),me.getUsuario(),me.getPass()).createStatement();
             String sql="UPDATE ZonasDeSurtido SET nombre='"+zona.getText()+"', idArea="+idArea+ " WHERE idTienda="+tienda+ " and idZona="+mno.getIdZona() ;
             st.executeUpdate(sql);
+            st.close();
 
 
         } catch (Exception e) {
@@ -148,6 +152,7 @@ public class Area extends AppCompatActivity {
             Statement st = bdc.conexionBD(me.getServer(),me.getBase(),me.getUsuario(),me.getPass()).createStatement();
             String sql="INSERT INTO ZonasDeSurtido  (idTienda,nombre,idArea) VALUES ('"+tienda+"','"+zona.getText()+"',"+idArea+");";
             st.executeUpdate(sql);
+            st.close();
 
 
         } catch (Exception e) {
@@ -169,6 +174,7 @@ public class Area extends AppCompatActivity {
             while(rs.next()){
                 numeroArea=rs.getString(1);
             }
+            st.close();
 
         } catch (Exception e) {
 
@@ -192,6 +198,7 @@ public class Area extends AppCompatActivity {
                 listaArea.add(rs.getString(1));
 
             }
+            st.close();
 
 
         } catch (Exception e) {
@@ -217,6 +224,7 @@ public class Area extends AppCompatActivity {
                 zonas=rs.getString(1);
 
             }
+            st.close();
 
 
         } catch (Exception e) {
@@ -233,7 +241,7 @@ public class Area extends AppCompatActivity {
             x.setTextColor(Color.YELLOW); toast.show();
         }else{
             RegistrarZona();
-            Toast toast = Toast.makeText(getApplication(), "Se a creado un nuevo registro", Toast.LENGTH_LONG);
+            Toast toast = Toast.makeText(getApplication(), "Se ha creado un nuevo registro", Toast.LENGTH_LONG);
             TextView x = (TextView) toast.getView().findViewById(android.R.id.message);
             x.setTextColor(Color.YELLOW); toast.show();
             actualizarPagina();
@@ -259,6 +267,7 @@ public class Area extends AppCompatActivity {
 
 
             }
+            st.close();
 
 
         } catch (Exception e) {
@@ -340,11 +349,12 @@ public class Area extends AppCompatActivity {
 
                 listaZonas.add(zonas);
             }
+            st.close();
 
 
         } catch (Exception e) {
 
-            Toast.makeText(this, "Error al Mostar Zonas", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Error al Mostrar Zonas", Toast.LENGTH_SHORT).show();
             Toast toast = Toast.makeText(getApplication(), "Erroal  mostrar zonas", Toast.LENGTH_LONG);
             TextView x = (TextView) toast.getView().findViewById(android.R.id.message);
             x.setTextColor(Color.YELLOW); toast.show();

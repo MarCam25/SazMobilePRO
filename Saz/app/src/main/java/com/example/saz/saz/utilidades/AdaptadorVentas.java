@@ -8,7 +8,6 @@ import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -18,22 +17,17 @@ import android.widget.Toast;
 
 import com.example.saz.saz.DetalleVenta;
 import com.example.saz.saz.Modelo.Numero;
-import com.example.saz.saz.OrdenEspera;
 import com.example.saz.saz.Principal;
 import com.example.saz.saz.conexion.ConexionBDCliente;
 import com.example.saz.saz.Modelo.ModeloEmpresa;
 import com.example.saz.saz.Modelo.ModeloResumen;
 import com.example.saz.saz.R;
 import com.example.saz.saz.entidades.Comandero;
-import com.example.saz.saz.menu;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
-
-
-import org.w3c.dom.Text;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -65,7 +59,7 @@ public AdaptadorVentas (ArrayList<Comandero> listComandero){
 
 
     @Override
-    public void onBindViewHolder(final ViewHolderVentas holder, int position) {
+    public void onBindViewHolder(final ViewHolderVentas holder, final int position) {
         holder.numero.setText(listComandero.get(position).getNumero());
         holder.cliente.setText(listComandero.get(position).getCliente());
         holder.total.setText(listComandero.get(position).getTotal());
@@ -112,10 +106,9 @@ public AdaptadorVentas (ArrayList<Comandero> listComandero){
                                 consultarDatos(holder);
                                 rechazarComandero(holder);
                                 rechazarDetalle(holder);
-                                rechazarLog(holder);
                                 Principal.location=2;
-                                Intent intent=new Intent(holder.context,menu.class);
-                                holder.context.startActivity(intent);
+                                removeItem(position);
+                                notifyDataSetChanged();
 
 
                             }
@@ -135,21 +128,16 @@ public AdaptadorVentas (ArrayList<Comandero> listComandero){
     }
 
 
-    public void rechazarLog(final ViewHolderVentas holder){
-        try {
-
-            Statement st = bdc.conexionBD(me.getServer(),me.getBase(),me.getUsuario(),me.getPass()).createStatement();
-            String sql="DELETE FROM comanderoLog WHERE numero="+holder.numero.getText();
-            st.executeUpdate(sql);
-        } catch (Exception e) {
-
-        }
+    public void removeItem(int position) {
+        this.listComandero.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, getItemCount() - position);
     }
 
 
     public void consultarDatos(final ViewHolderVentas holder){
 
-    int barcode=0;
+    String  barcode=null;
         try {
 
             Statement st = bdc.conexionBD(me.getServer(),me.getBase(),me.getUsuario(),me.getPass()).createStatement();
@@ -157,34 +145,36 @@ public AdaptadorVentas (ArrayList<Comandero> listComandero){
             ResultSet rs=st.executeQuery(sql);
             ModeloResumen mr=null;
             while(rs.next()){
-                barcode=rs.getInt(1);
+                barcode=rs.getString (1);
                 regresarCantidad(barcode, holder);
             }
+            st.close();
 
 
 
-        } catch (Exception e) {
-
+        } catch (SQLException e) {
+            e.getMessage();
         }
     }
 
 
 
 
-    public void regresarCantidad(int barcode,final ViewHolderVentas holder){
+    public void regresarCantidad(String  barcode,final ViewHolderVentas holder){
 
 
         try {
 
             Statement st = bdc.conexionBD(me.getServer(),me.getBase(),me.getUsuario(),me.getPass()).createStatement();
-            String sql="UPDATE existen  pedido=pedido-1 , cantreal-1 where barcode="+barcode;
+            String sql="UPDATE existen set pedido=pedido-1 , CANTREAL=CANTREAL-1 where barcode='"+barcode+"'";
             st.executeUpdate(sql);
+            st.close();
 
 
 
 
-        } catch (Exception e) {
-
+        } catch (SQLException e) {
+            e.getMessage();
         }
 
 
@@ -194,8 +184,9 @@ public AdaptadorVentas (ArrayList<Comandero> listComandero){
         try {
 
             Statement st = bdc.conexionBD(me.getServer(),me.getBase(),me.getUsuario(),me.getPass()).createStatement();
-            String sql="DELETE FROM comanderoDet WHERE numero="+holder.numero.getText();
+            String sql="UPDATE  comanderoDet SET status=10 WHERE numero="+holder.numero.getText();
             st.executeUpdate(sql);
+            st.close();
             ModeloResumen mr=null;
 
 
@@ -222,6 +213,7 @@ public AdaptadorVentas (ArrayList<Comandero> listComandero){
                  contenedor+="//"+numero+","+talla+","+barcode+","+idEmpleado;
 
             }
+            st.close();
 
 
         } catch (Exception e) {
@@ -233,15 +225,16 @@ public AdaptadorVentas (ArrayList<Comandero> listComandero){
         try {
 
             Statement st = bdc.conexionBD(me.getServer(),me.getBase(),me.getUsuario(),me.getPass()).createStatement();
-            String sql="DELETE FROM comandero WHERE numero="+holder.numero.getText();
-            ResultSet rs = st.executeQuery(sql);
+            String sql="update comandero set status=10 WHERE numero="+holder.numero.getText();
+            st.executeUpdate(sql);
+            st.close();
             ModeloResumen mr=null;
 
 
 
 
-        } catch (Exception e) {
-
+        } catch (SQLException e) {
+            e.getMessage();
         }
 
     }
@@ -253,6 +246,7 @@ public AdaptadorVentas (ArrayList<Comandero> listComandero){
             Statement st = bdc.conexionBD(me.getServer(),me.getBase(),me.getUsuario(),me.getPass()).createStatement();
             String sql="select id from empleado where nombre='"+empleado+"';";
             ResultSet rs = st.executeQuery(sql);
+            st.close();
             ModeloResumen mr=null;
 
             while (rs.next()) {

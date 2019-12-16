@@ -112,6 +112,7 @@ public class RegistroArea extends AppCompatActivity {
                 zonas=rs.getString(1);
 
             }
+            st.close();
 
 
         } catch (Exception e) {
@@ -136,12 +137,10 @@ public class RegistroArea extends AppCompatActivity {
             String sql="select nombre from AreasDeControl where nombre='"+zona.getText()+"' ";
             ResultSet rs=st.executeQuery(sql);
             while(rs.next()){
-
-
                 zonas=rs.getString(1);
-
             }
 
+            st.close();
 
         } catch (Exception e) {
 
@@ -164,8 +163,7 @@ public class RegistroArea extends AppCompatActivity {
             Statement st = bdc.conexionBD(me.getServer(),me.getBase(),me.getUsuario(),me.getPass()).createStatement();
             String sql="insert into AreasDeControl (idTienda,nombre)values('"+tienda+"','"+zona.getText()+"');";
             st.executeUpdate(sql);
-
-
+            st.close();
         } catch (Exception e) {
 
             Toast.makeText(getApplicationContext(), "Error al registrar areax", Toast.LENGTH_SHORT).show();
@@ -179,6 +177,7 @@ public class RegistroArea extends AppCompatActivity {
             Statement st = bdc.conexionBD(me.getServer(),me.getBase(),me.getUsuario(),me.getPass()).createStatement();
             String sql="UPDATE AreasDeControl SET nombre='"+zona.getText()+"'where idArea="+mno.getIdArea()+" and idTienda="+tienda;
             st.executeUpdate(sql);
+            st.close();
 
 
         } catch (Exception e) {
@@ -223,6 +222,7 @@ public class RegistroArea extends AppCompatActivity {
                 areas.setNombreArea(rs.getString(3));
                 listaAreas.add(areas);
             }
+            st.close();
 
 
         } catch (Exception e) {

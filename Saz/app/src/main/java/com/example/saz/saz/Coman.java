@@ -100,13 +100,11 @@ public class Coman extends Fragment {
             mostrarOrdenes();
         }else{
 
-            Toast toast = Toast.makeText(getActivity(), "No tienes acceso al contenido de esta pantalla", Toast.LENGTH_LONG);
-            TextView x = (TextView) toast.getView().findViewById(android.R.id.message);
-            x.setTextColor(Color.YELLOW); toast.show();
+            Toast.makeText(getActivity(), "No tienes acceso al contenido de esta pantalla", Toast.LENGTH_LONG).show();
         }
         AdaptadorListaComan adapter = new AdaptadorListaComan(listaResumen);
         recyclerView.setAdapter(adapter);
-        IniciarTemporizador();
+        //IniciarTemporizador();
 
         act.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,9 +114,11 @@ public class Coman extends Fragment {
                 progressDialog.setMessage("Actualizando pedidos...");
                 progressDialog.show();
 
+
                 Intent lista = new Intent(context, menu.class);
                 Principal.location = 1;
                 context.startActivity(lista);
+
             }
         });
 
@@ -133,7 +133,7 @@ public class Coman extends Fragment {
         String tienda = getTienda();
         try {
             Statement st = bdc.conexionBD(me.getServer(), me.getBase(), me.getUsuario(), me.getPass()).createStatement();
-            String sql = " select numero,estilo,color,talla,ubicacion,llave, marca, acabado from comanderoDet INNER JOIN UbicacionesProductos on  UbicacionesProductos.barcode=comanderoDet.barcode inner join ZonasDeSurtido on UbicacionesProductos.idZona=ZonasDeSurtido.idZona where [status]=6 and Tienda=" + tienda + " and idArea=" + ubicacionEmpleado + ";";
+            String sql = " select numero,estilo,color,talla,ubicacion,llave, marca, acabado from comanderoDet INNER JOIN UbicacionesProductos on  UbicacionesProductos.barcode=comanderoDet.barcode inner join ZonasDeSurtido on UbicacionesProductos.idZona=ZonasDeSurtido.idZona where [status]=0 and Tienda=" + tienda + " and idArea=" + ubicacionEmpleado + ";";
             ResultSet rs = st.executeQuery(sql);
             ModeloResumen mr = null;
 
@@ -155,6 +155,7 @@ public class Coman extends Fragment {
 
 
             }
+            st.close();
 
         } catch (SQLException e) {
             Toast.makeText(context, "error en mostrar ordenes ", Toast.LENGTH_SHORT).show();
@@ -189,6 +190,7 @@ public class Coman extends Fragment {
 
 
             }
+            st.close();
 
         } catch (Exception e) {
             Toast.makeText(context, "error en mostrar ordenes ", Toast.LENGTH_SHORT).show();
@@ -238,137 +240,11 @@ public class Coman extends Fragment {
 
     }
 
-    private void IniciarTemporizador() {
-        try {
-            temporizadorComandero = new Timer();
-            tarea = new TimerTask() {
-                public void run() {
-                    handler.post(new Runnable() {
-                        public void run() {
-                            if (ConsultaF.not == true) {
-
-                            }
-
-                            consultarProductos();
 
 
 
 
-                           /* notific = true;
-                            vuelt = true;
 
-                            ConsultarNuevosRegistros();
-
-
-                            if (cantidadRegistros > Principal.hiloCantidadC) {
-                                mandarNotificacione();
-                                Principal.hiloCantidadC = cantidadRegistros;
-                            } else {
-                                Principal.hiloCantidadC = cantidadRegistros;
-                            }
-                            */
-
-                        }
-                    });
-                }
-            };
-            temporizadorComandero.schedule(tarea, 0, 30000);
-        } catch (RuntimeException r) {
-
-        } catch (Exception e) {
-
-        }
-    }
-
-    public void mandarNotificacione() {
-        String pares = null;
-        ModeloNumeroOrden mno = new ModeloNumeroOrden();
-        String IdTienda = getTienda();
-
-        int res = cantidadRegistros - Principal.hiloCantidadC;
-        try {
-
-            Statement st = bdc.conexionBD(me.getServer(), me.getBase(), me.getUsuario(), me.getPass()).createStatement();
-            String sql = "select top " + res + " barcode from comanderodet inner join comanderoLog on comanderoLog.numero=comanderoDet.numero where status=0 and tienda=" + IdTienda + " order by hora desc ";
-            ResultSet rs = st.executeQuery(sql);
-
-
-            while (rs.next()) {
-                // pares = rs.getString(1);
-                if (cantidadRegistros > Principal.hiloCantidadC) {
-
-                    String barcode = rs.getString(1);
-                    obtenerAreaDelProducto(barcode);
-
-                }
-
-
-            }
-
-
-        } catch (SQLException e) {
-
-
-        } catch (NullPointerException nu) {
-
-        } catch (RuntimeException r) {
-
-        }
-
-    }
-
-    public String getIdArea(int id) {
-
-
-        String nombre = null;
-        try {
-
-            Statement st = bdc.conexionBD(me.getServer(), me.getBase(), me.getUsuario(), me.getPass()).createStatement();
-            String sql = "select nombre from  AreasDeControl where id=" + id;
-            ResultSet rs = st.executeQuery(sql);
-
-
-            while (rs.next()) {
-
-                nombre = rs.getString(1);
-
-
-            }
-
-        } catch (SQLException e) {
-            Toast.makeText(getActivity(), "  Error 123", Toast.LENGTH_LONG).show();
-        } catch (NullPointerException nu) {
-
-        } catch (RuntimeException r) {
-
-        }
-        return nombre;
-    }
-
-    public void obtenerAreaDelProducto(String barcode) {
-
-        String idTienda = getTienda();
-        try {
-
-            Statement st = bdc.conexionBD(me.getServer(), me.getBase(), me.getUsuario(), me.getPass()).createStatement();
-            String sql = "select idZona from UbicacionesProductos where barcode='" + barcode + "' and  idtienda=" + idTienda + "";
-            ResultSet rs = st.executeQuery(sql);
-
-
-            while (rs.next()) {
-
-                int area = rs.getInt(1);
-                validarArea(area);
-
-            }
-
-        } catch (SQLException e) {
-        } catch (NullPointerException nu) {
-
-        } catch (RuntimeException r) {
-
-        }
-    }
 
     public String getIdUsuario() {
         String idUsuario = null;
@@ -384,6 +260,7 @@ public class Coman extends Fragment {
                 idUsuario = (rs.getString(1));
 
             }
+            st.close();
 
         } catch (SQLException e) {
         } catch (NullPointerException nu) {
@@ -409,6 +286,7 @@ public class Coman extends Fragment {
                 area = (rs.getInt(1));
 
             }
+            st.close();
 
         } catch (SQLException e) {
         } catch (NullPointerException nu) {
@@ -419,28 +297,6 @@ public class Coman extends Fragment {
         return area;
     }
 
-    public String getNombreArea(String id) {
-        String nombre = null;
-        try {
-
-            Statement st = bdc.conexionBD(me.getServer(), me.getBase(), me.getUsuario(), me.getPass()).createStatement();
-            String sql = "select nombre from AreasDeControl where id=" + id;
-            ResultSet rs = st.executeQuery(sql);
-
-
-            while (rs.next()) {
-                nombre = (rs.getString(1));
-
-            }
-
-        } catch (SQLException e) {
-        } catch (NullPointerException nu) {
-
-        } catch (RuntimeException r) {
-
-        }
-        return nombre;
-    }
 
     public void validarArea(int area) {
         int areaA = getAreaActual();
@@ -462,6 +318,7 @@ public class Coman extends Fragment {
 
 
             }
+            st.close();
 
         } catch (SQLException e) {
             Toast.makeText(getActivity(), "Error al Validar area", Toast.LENGTH_LONG).show();
@@ -532,6 +389,7 @@ public class Coman extends Fragment {
                 cantidadRegistros = rs.getInt(1);
 
             }
+            st.close();
 
 
         } catch (SQLException e) {
@@ -566,95 +424,10 @@ public class Coman extends Fragment {
         return tienda;
     }
 
-    public void consultarProductos() {
-        String idTienda = getTienda();
-        ModeloNumeroOrden mno = new ModeloNumeroOrden();
-
-        String idArea=getArea();
-        String llaveArea="";
-        int cont=0;
-        try {
-            String tienda = ultimaVez();
-            Statement st = bdc.conexionBD(me.getServer(), me.getBase(), me.getUsuario(), me.getPass()).createStatement();
-            String sql = "select c.llave from comanderoDet c inner join UbicacionesProductos u on c.barcode = u.barcode inner join ZonasDeSurtido z on u.idZona = z.idZona where z.idArea = "+idArea+
-            " and c.status = 0";
-            ResultSet rs = st.executeQuery(sql);
-
-
-            while (rs.next()) {
-                cont++;
-                llaveArea+="'"+rs.getString(1)+"',";
-
-
-            }
-            llaveArea=llaveArea.substring(0,llaveArea.length()-1);
-            getNotificacion(cont);
 
 
 
-        } catch (SQLException e) {
 
-        } catch (NullPointerException nu) {
-
-        } catch (RuntimeException r) {
-
-        }
-        actualizarProducto(llaveArea);
-    }
-
-    public void actualizarProducto(String llaveArea){
-        String idTienda = getTienda();
-        ModeloNumeroOrden mno = new ModeloNumeroOrden();
-        String area = getArea();
-        String idArea=consultarIDArea();
-
-        try {
-            String tienda = ultimaVez();
-            Statement st = bdc.conexionBD(me.getServer(), me.getBase(), me.getUsuario(), me.getPass()).createStatement();
-            String sql = "update comanderoDet set [status] = 6 where llave in ("+llaveArea+")";
-            st.executeQuery(sql);
-
-
-        } catch (SQLException e) {
-
-        } catch (NullPointerException nu) {
-
-        } catch (RuntimeException r) {
-
-        }
-
-    }
-
-
-    public String  consultarIDArea() {
-        String idTienda = getTienda();
-        ModeloNumeroOrden mno = new ModeloNumeroOrden();
-        String area = getArea();
-        String idArea = "";
-
-        try {
-            String tienda = ultimaVez();
-            Statement st = bdc.conexionBD(me.getServer(), me.getBase(), me.getUsuario(), me.getPass()).createStatement();
-            String sql = "Select idarea from areasdecontrol where nombre='" + area + "' and idTienda=" + idTienda;
-            ResultSet rs = st.executeQuery(sql);
-
-
-            while (rs.next()) {
-                idArea=rs.getString(1);
-
-            }
-
-
-        } catch (SQLException e) {
-
-        } catch (NullPointerException nu) {
-
-        } catch (RuntimeException r) {
-
-        }
-
-        return idArea;
-    }
 
 
 

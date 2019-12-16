@@ -1,12 +1,16 @@
 package com.example.saz.saz;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -25,6 +29,11 @@ import com.example.saz.saz.conexion.ConexionSQLiteHelper;
 import com.example.saz.saz.conexion.ConexionSqlServer;
 import com.example.saz.saz.utilidades.ModeloTienda;
 import com.example.saz.saz.utilidades.Utilidades;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -33,6 +42,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
+
+
+import static android.content.ContentValues.TAG;
 
 public class ActPrincipal extends AppCompatActivity {
     String usuario, nombreUsuario, numeroUsuario;
@@ -47,7 +59,7 @@ public class ActPrincipal extends AppCompatActivity {
     ArrayList listaTiendas=new ArrayList();
     ArrayList listaTipo=new ArrayList();
     ArrayList listaZonas=new ArrayList();
-
+    String token="";
     String numeroT;
     public String numeroTienda;
     private Spinner spTiendas, spZona,spTipo;
@@ -64,28 +76,28 @@ public class ActPrincipal extends AppCompatActivity {
         spTipo=(Spinner)findViewById(R.id.spTipo);
         acep=(Button)findViewById(R.id.prueba);
 
+
+
         llenarSpTipo();
         ArrayAdapter<String> adapterTipo = new ArrayAdapter<String>(getApplicationContext(), R.layout.spinner_item, listaTipo);
         spTipo.setAdapter(adapterTipo);
 
         spTipo.setSelection(ultimaVezTipo());
 
-        crearComanderoLog();
-        crearComanderoDet();
-        crearUbicacionTabla();
-        crearAreaAsignadaTabla();
-        crearZonaTabla();
-        crearComanderoTabla();
-        crearAreasTabla();
+        CrearTablas crearTablas=new CrearTablas();
+        crearTablas.execute();
+
 
 
         obtenerTiendas();
 
+
+
+        registrarToken token=new registrarToken();
+        token.execute();
+
         ArrayAdapter<String> adapterTiendas = new ArrayAdapter<String>(getApplicationContext(), R.layout.spinner_item, listaTiendas);
         spTiendas.setAdapter(adapterTiendas);
-
-
-
 
 
         spTiendas.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -116,9 +128,6 @@ public class ActPrincipal extends AppCompatActivity {
             public void onClick(View v) {
 
 
-
-
-
                 if(spZona.getSelectedItem()!=null){
 
 
@@ -130,10 +139,6 @@ public class ActPrincipal extends AppCompatActivity {
                     entrarSinArea();
 
                 }
-
-
-
-
             }
         });
 
@@ -156,20 +161,17 @@ public class ActPrincipal extends AppCompatActivity {
         guardarArea();
 
         hola++;
-
-
-
-
-
     }
 
     public void deleteArea(){
 
 
             try{
+
                 ConexionSQLiteHelper conn = new ConexionSQLiteHelper(this, "db tienda", null, 1);
                 SQLiteDatabase db=conn.getWritableDatabase();
                 db.execSQL("DELETE FROM "+Utilidades.TABLA_AREA);
+
             }catch (Exception e) {
                 Toast.makeText(getApplicationContext(), "Error al actualizar area", Toast.LENGTH_LONG);
             }
@@ -193,9 +195,33 @@ public class ActPrincipal extends AppCompatActivity {
         }catch (Exception e){
             Toast.makeText(getApplicationContext(),"Error al guardar Area en sql Lite",Toast.LENGTH_LONG);
         }
-
-
     }
+
+    public String getIdUsuario(){
+        String idUsuario=null;
+        ModeloUsuario mu=new ModeloUsuario();
+        try {
+
+            Statement st = bdc.conexionBD(me.getServer(), me.getBase(), me.getUsuario(), me.getPass()).createStatement();
+            String sql = "Select numero from empleado where nombre='"+mu.getNombre()+"'";
+            ResultSet rs = st.executeQuery(sql);
+
+
+            while (rs.next()) {
+                idUsuario=(rs.getString(1));
+
+            }
+
+            st.close();
+
+        } catch (RuntimeException r){
+
+        }catch (Exception e) {
+        }
+        return idUsuario;
+    }
+
+
 
     public int ultimaVezArea(){
         int tipo=0;
@@ -235,6 +261,9 @@ public class ActPrincipal extends AppCompatActivity {
         }
         return tipo;
     }
+
+
+
     public  String  consultarIDArea() {
         String idTienda = numeroT;
         ModeloNumeroOrden mno = new ModeloNumeroOrden();
@@ -255,7 +284,7 @@ public class ActPrincipal extends AppCompatActivity {
 
             }
 
-
+            st.close();
         } catch (SQLException e) {
 
         } catch (NullPointerException nu) {
@@ -312,6 +341,7 @@ public class ActPrincipal extends AppCompatActivity {
                 startActivity(inte);
 
             }
+            st.close();
 
 
         } catch (Exception e) {
@@ -358,7 +388,7 @@ public class ActPrincipal extends AppCompatActivity {
                 startActivity(inte);
 
             }
-
+            st.close();
 
         } catch (Exception e) {
             Toast.makeText(getApplicationContext(), "Error en sp", Toast.LENGTH_SHORT).show();
@@ -371,15 +401,12 @@ public class ActPrincipal extends AppCompatActivity {
             Statement st = bdc.conexionBD(me.getServer(),me.getBase(),me.getUsuario(),me.getPass()).createStatement();
             ResultSet rs = st.executeQuery("select numero from tiendas where nombre='"+spTiendas.getSelectedItem()+"'");
 
-
             while (rs.next()) {
-
 
                 numeroTienda=rs.getString(1);
 
             }
-
-
+            st.close();
         } catch (Exception e) {
             Toast.makeText(getApplicationContext(), "Error en sp", Toast.LENGTH_SHORT).show();
         }
@@ -387,29 +414,18 @@ public class ActPrincipal extends AppCompatActivity {
     }
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-
         if ((keyCode == KeyEvent.KEYCODE_BACK)) {
-
         }
-
         return true;
 
     }
     public void actualizarZona(String zona){
-
-
-
             ConexionSQLiteHelper conn = new ConexionSQLiteHelper(this, "db tienda", null, 1);
             SQLiteDatabase db=conn.getWritableDatabase();
 
-
-
-
             db.execSQL("UPDATE zona SET zona="+zona+"");
-
-
-
     }
+
 
     public void actualizar(){
         SQLiteDatabase db=conn.getReadableDatabase();
@@ -444,15 +460,11 @@ public void getTienda(String numeroT){
 
 
         while (rs.next()) {
-
-
             listaTiendas.add(rs.getString(1));
-
-
 
         }
 
-
+        st.close();
     } catch (Exception e) {
         Toast.makeText(getApplicationContext(), "Error al obtener datos del usuario", Toast.LENGTH_SHORT).show();
     }
@@ -473,7 +485,7 @@ public void consultarZona(){
 
 
         }
-
+        st.close();
 
     } catch (Exception e) {
         Toast.makeText(getApplicationContext(), "Error al obtener datos del usuario", Toast.LENGTH_SHORT).show();
@@ -493,6 +505,8 @@ public void consultarZona(){
                 nombreArea=rs.getString(1);
 
                 }
+
+            st.close();
 
 
         } catch (Exception e) {
@@ -515,6 +529,7 @@ public void consultarZona(){
 
                     listaTiendas.add(rs.getString(1));
                 }
+                st.close();
 
         } catch (Exception e) {
             Toast.makeText(getApplicationContext(), "Error en traer tiendas", Toast.LENGTH_SHORT).show();
@@ -523,7 +538,7 @@ public void consultarZona(){
 
 
     private void insertarEntrada() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd-hhmmss", Locale.getDefault());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd-hh:mm:ss", Locale.getDefault());
         Date date = new Date();
 
         String fecha = dateFormat.format(date);
@@ -534,7 +549,7 @@ public void consultarZona(){
         try {
             Statement st = bdc.conexionBD(me.getServer(),me.getBase(),me.getUsuario(),me.getPass()).createStatement();
             st.executeUpdate("insert into logdia (nombre, fecha, tienda, hora,origen, tipo, idEmpleado, caja, id, llave, autoriza) values ('"+nombreUsuario+"', getDate(),1,'"+FechaHora[1]+"', 1, 'ENTRADA',"+numeroUsuario+",1 ,92911, newId(), 0 );");
-
+            st.close();
 
 
         } catch (Exception e) {
@@ -557,6 +572,7 @@ public void consultarZona(){
              numeroUsuario=rs.getString(2);
 
             }
+            st.close();
         } catch (Exception e) {
             Toast.makeText(getApplicationContext(), "Error al obtener datos del usuario", Toast.LENGTH_SHORT).show();
         }
@@ -586,8 +602,11 @@ public void consultarZona(){
 
             }
             Statement st = bdc.conexionBD(me.getServer(),me.getBase(),me.getUsuario(),me.getPass()).createStatement();
-            String sql="insert into AreasAsignadas (idTienda,idArea,idEmpleado,Fecha,Hora) values ("+numeroTienda+",'"+id+"',"+numeroUsuario+",getDate(),getDate());";
-            st.executeQuery(sql);
+            String sql="if exists (select 1 from areasAsignadas where idEmpleado ="+getIdUsuario()+" ) begin" +
+                    " update areasAsignadas set token ='"+token+"', idArea="+id+", idTienda="+numeroTienda+"  where idEmpleado = "+getIdUsuario()+"  end else begin" +
+                    " insert into AreasAsignadas (idTienda,idArea,idEmpleado,Fecha,Hora,token) values ("+numeroTienda+",'"+id+"',"+numeroUsuario+",getDate(),getDate(),'"+token+"') end";
+                     st.executeQuery(sql);
+                     st.close();
 
 
         } catch (Exception e) {
@@ -605,6 +624,7 @@ public void consultarZona(){
             while(rs.next()){
                 id=rs.getString(1);
             }
+            st.close();
 
         } catch (Exception e) {
             Toast.makeText(getApplicationContext(),"Error",Toast.LENGTH_LONG).show();
@@ -613,89 +633,14 @@ public void consultarZona(){
     }
 
 
-    public void crearComanderoTabla(){
-
-        try{
-            Statement st=bdc.conexionBD(me.getServer(),me.getBase(),me.getUsuario(),me.getPass()).createStatement();
-            String sql="Create table comandero(numero varchar(50), tienda numeric(5,0), cliente nvarchar(50), fecha date, total decimal(18,2), status nchar(1), pares numeric(4,0), empleado varchar(50), impreso bit, llave uniqueidentifier);";
-            st.executeUpdate(sql);
-        }catch (SQLException e){
-            e.getMessage();
-            Toast.makeText(getApplicationContext(),"No se puede crear la tabla Comandero",Toast.LENGTH_LONG);
-        }
-
-    }
-
-    public void crearAreasTabla(){
-
-        try{
-            Statement st=bdc.conexionBD(me.getServer(),me.getBase(),me.getUsuario(),me.getPass()).createStatement();
-            String sql="Create table AreasDeControl(idArea numeric(18,0) IDENTITY, idTienda numeric(18,0), nombre nchar(50));";
-            st.executeUpdate(sql);
-        }catch (SQLException e){
-            e.getMessage();
-            Toast.makeText(getApplicationContext(),"No se puede crear la tabla AreasDeControl ",Toast.LENGTH_LONG);
-        }
-
-    }
-
-    public void crearZonaTabla(){
-
-        try{
-            Statement st=bdc.conexionBD(me.getServer(),me.getBase(),me.getUsuario(),me.getPass()).createStatement();
-            String sql="Create table AreasDeControl (idZona numeric(18,0) IDENTITY, idTienda nvarchar(50), nombre nchar(50), idArea numeric(18, 0))";
-            st.executeUpdate(sql);
-        }catch (SQLException e){
-            e.getMessage();
-            Toast.makeText(getApplicationContext(),"No se puede crear la tabla AreasDeControl ",Toast.LENGTH_LONG);
-        }
-
-    }
-
-
-    public void crearAreaAsignadaTabla(){
-        try{
-            Statement st=bdc.conexionBD(me.getServer(),me.getBase(),me.getUsuario(),me.getPass()).createStatement();
-            String sql="Create table AreasAsignadas (idTienda numeric(18,0), idArea nvarchar(50), idEmpleado numeric(18,0), fecha date, hora time(2))";
-            st.executeUpdate(sql);
-        }catch (SQLException e){
-            e.getMessage();
-            Toast.makeText(getApplicationContext(),"No se puede crear la tabla AreasDeControl ",Toast.LENGTH_LONG);
-        }
-    }
-
-    public void crearUbicacionTabla(){
-        try{
-            Statement st=bdc.conexionBD(me.getServer(),me.getBase(),me.getUsuario(),me.getPass()).createStatement();
-            String sql="Create table UbicacionesProductos (idTienda numeric(18,0), idZona numeric(18,0), barcode nvarchar(50), id numeric(18,0) IDENTITY, hora time(2))";
-            st.executeUpdate(sql);
-        }catch (Exception e){
-            e.getMessage();
-        }
-    }
-
-
-    public void crearComanderoDet(){
-        try{
-            Statement st=bdc.conexionBD(me.getServer(),me.getBase(),me.getUsuario(),me.getPass()).createStatement();
-            String sql="Create table comanderoDet (numero varchar(50), tienda numeric(5,0), barcode nvarchar(50), estilo nvarchar(50),color nvarchar(50), marca nvarchar(50), acabado nvarchar(50), talla decimal(4,1), status char(1), ubicacion nvarchar(50), llave uniqueidentifier)";
-            st.executeUpdate(sql);
-        }catch (Exception e ){
-            e.getMessage();
-        }
-    }
 
 
 
-    public void crearComanderoLog(){
-        try{
-            Statement st=bdc.conexionBD(me.getServer(),me.getBase(),me.getUsuario(),me.getPass()).createStatement();
-            String sql="Create table comanderoLog (numero varchar(50), fecha date, hora time(7), llave uniqueidentifier)";
-            st.executeUpdate(sql);
-        }catch (Exception e ){
-            e.getMessage();
-        }
-    }
+
+
+
+
+
 
     public void llenarSpTipo(){
         listaTipo.add(" ");
@@ -722,7 +667,261 @@ public void consultarZona(){
     }
 
 
+
+    private class CrearTablas extends AsyncTask<Void,Void,Void>
+    {
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+            try{
+                Statement st=bdc.conexionBD(me.getServer(),me.getBase(),me.getUsuario(),me.getPass()).createStatement();
+                String sql="Create table comanderoLog (numero varchar(50), fecha date, hora time(7), llave uniqueidentifier)";
+                st.executeUpdate(sql);
+
+
+                sql="Create table comanderoDet (numero varchar(50), tienda numeric(5,0), barcode nvarchar(50), estilo nvarchar(50),color nvarchar(50), marca nvarchar(50), acabado nvarchar(50), talla decimal(4,1), status char(1), ubicacion nvarchar(50), llave uniqueidentifier)";
+                st.executeUpdate(sql);
+
+                sql="Create table UbicacionesProductos (idTienda numeric(18,0), idZona numeric(18,0), barcode nvarchar(50), id numeric(18,0) IDENTITY)";
+                st.executeUpdate(sql);
+
+                sql="Create table AreasAsignadas (idTienda numeric(18,0), idArea nvarchar(50), idEmpleado numeric(18,0), fecha date, hora time(2),token nvarchar(150) not null)";
+                st.executeUpdate(sql);
+
+                sql="Create table AreasDeControl (idArea numeric(18,0) IDENTITY not null, idTienda nvarchar(50) not null, nombre nchar(50) not null)";
+                st.executeUpdate(sql);
+
+                sql="Create table comandero(numero varchar(50), tienda numeric(5,0), cliente nvarchar(50), fecha date, total decimal(18,2), status nchar(1), pares numeric(4,0), empleado varchar(50), impreso bit, llave uniqueidentifier);";
+                st.executeUpdate(sql);
+
+                sql="create table ZonasDeSurtido(\n" +
+                        "idZona numeric identity(1,1) ,\n" +
+                        "idTienda nvarchar(50) not null,\n" +
+                        "nombre nvarchar(50) not null,\n" +
+                        "idArea numeric(18,0) not null\n" +
+                        ")";
+                st.executeUpdate(sql);
+
+                sql="drop procedure LupitaApartados";
+                st.executeUpdate(sql);
+
+                sql="CREATE PROCEDURE [dbo].[LupitaApartados] @Barcode AS VARCHAR(8000) = NULL\n" +
+                        "\t,@TallaBusca AS VARCHAR(5)\n" +
+                        "\t,@TiendaBusca AS DECIMAL \n" +
+                        "\t,@FechaBusca AS VARCHAR(8)\n" +
+                        "AS\n" +
+                        "SET NOCOUNT ON\n" +
+                        "\n" +
+                        "DECLARE @SQL AS NVARCHAR(MAX)\n" +
+                        "\t,@Tienda AS NVARCHAR(200)\n" +
+                        "\t,@Talla AS NVARCHAR(5)\n" +
+                        "\t,@Cantidad AS NVARCHAR(10)\n" +
+                        "\t,@Tallas AS NVARCHAR(MAX)\n" +
+                        "\t,@TallasSort AS NVARCHAR(MAX)\n" +
+                        "\t,@TallasUpdate AS NVARCHAR(MAX)\n" +
+                        "\n" +
+                        "IF object_id('tempdb..##TempTallas') IS NOT NULL\n" +
+                        "BEGIN\n" +
+                        "\tDROP TABLE ##TempTallas\n" +
+                        "END\n" +
+                        "\n" +
+                        "IF object_id('tempdb..##TempTienda') IS NOT NULL\n" +
+                        "BEGIN\n" +
+                        "\tDROP TABLE ##TempTienda\n" +
+                        "END\n" +
+                        "\n" +
+                        "IF object_id('tempdb..##Temp') IS NOT NULL\n" +
+                        "BEGIN\n" +
+                        "\tDROP TABLE ##Temp\n" +
+                        "END\n" +
+                        "\n" +
+                        "CREATE TABLE ##TempTienda (Tienda INT NOT NULL)\n" +
+                        "\n" +
+                        "IF @TiendaBusca <= 0\n" +
+                        "BEGIN\n" +
+                        "\tSET @SQL = 'Insert Into ##TempTienda (Tienda) Select Distinct Tienda From Existen'\n" +
+                        "END\n" +
+                        "ELSE\n" +
+                        "BEGIN\n" +
+                        "\tSET @SQL = 'Insert Into ##TempTienda (Tienda) Select Distinct Tienda From Existen WHERE Tienda = ' + CAST(@TiendaBusca AS NVARCHAR(10))\n" +
+                        "END\n" +
+                        "EXECUTE (@SQL)\n" +
+                        "\n" +
+                        "CREATE TABLE ##Temp (\n" +
+                        "\tBarcode VARCHAR(100) collate database_default NOT NULL\n" +
+                        "\t,Tienda VARCHAR(100) collate database_default NOT NULL\n" +
+                        "\t,Estilo VARCHAR(100) collate database_default NOT NULL\n" +
+                        "\t,Color VARCHAR(100) collate database_default NOT NULL\n" +
+                        "\t,Acabado VARCHAR(100) collate database_default NOT NULL\n" +
+                        "\t,Marca VARCHAR(100) collate database_default NOT NULL\n" +
+                        "\t,SubLinea VARCHAR(100) collate database_default NOT NULL\n" +
+                        "\t,Linea VARCHAR(100) collate database_default NOT NULL\n" +
+                        "\t,Corrida VARCHAR(100) collate database_default NOT NULL\n" +
+                        "\t,Temporada VARCHAR(100) collate database_default NOT NULL\n" +
+                        "\t,Basico BIT NOT NULL\n" +
+                        "\t)\n" +
+                        "\n" +
+                        "DECLARE @CompTalla AS NVARCHAR(MAX)\n" +
+                        "DECLARE @CompTiend AS NVARCHAR(MAX)\n" +
+                        "DECLARE @CompFecha AS NVARCHAR(250)\n" +
+                        "DECLARE @SiHay AS INT\n" +
+                        "\n" +
+                        "SET @SiHay = 0\n" +
+                        "\n" +
+                        "IF CAST(@TallaBusca AS DECIMAL) <= 0\n" +
+                        "BEGIN\n" +
+                        "\tSET @CompTalla = ''\n" +
+                        "END\n" +
+                        "ELSE\n" +
+                        "BEGIN\n" +
+                        "\tSET @CompTalla = 'AND existen.Talla = ' + CAST(@TallaBusca AS NVARCHAR(10))\n" +
+                        "END\n" +
+                        "\n" +
+                        "IF @TiendaBusca <= 0\n" +
+                        "BEGIN\n" +
+                        "\tSET @CompTiend = ''\n" +
+                        "END\n" +
+                        "ELSE\n" +
+                        "BEGIN\n" +
+                        "\tSET @CompTiend = ' AND existen.TIENDA = ' + CAST(@TiendaBusca AS NVARCHAR(10))\n" +
+                        "END\n" +
+                        "\n" +
+                        "IF NOT NULLIF(@FechaBusca, '') IS NULL\n" +
+                        "BEGIN\n" +
+                        "    SET @CompFecha = ' AND detap.FECHA >= ''' + @FechaBusca + ''''\n" +
+                        "END\n" +
+                        "ELSE\n" +
+                        "BEGIN\n" +
+                        "    SET @CompFecha = ''\n" +
+                        "END\n" +
+                        "\n" +
+                        "SET @SQL = 'SELECT existen.BARCODE, tiendas.NOMBRE AS Tienda, existen.TALLA, ISNULL(existen.CANTIDAD, 0) - ISNULL(existen.CANTREAL, 0) - (SELECT ISNULL(SUM(CANTIDAD), 0) AS CUANTOS FROM detap WHERE BARCODE = existen.BARCODE AND PUNTO = existen.TALLA AND TIENDA = existen.TIENDA) AS CANTIDAD Into ##TempTallas FROM existen LEFT JOIN tiendas ON existen.TIENDA = tiendas.NUMERO Where (Existen.Tienda In (Select Tienda From ##TempTienda)) And (Existen.Cantidad <> 0) ' + @CompTalla + @CompTiend + ' and existen.barcode in(''' + @Barcode + ''') GROUP BY existen.BARCODE, tiendas.NOMBRE, existen.TALLA, existen.TIENDA, Existen.Cantidad, existen.CANTREAL ORDER BY existen.BARCODE, existen.TALLA'\n" +
+                        "EXECUTE (@SQL)\n" +
+                        "\n" +
+                        "SET @sql = 'DECLARE temp_cursor CURSOR FOR SELECT Distinct existen.TALLA FROM existen INNER JOIN tiendas ON existen.TIENDA = tiendas.NUMERO INNER JOIN articulo ON existen.BARCODE = articulo.BARCODE INNER JOIN colores ON articulo.COLOR = colores.numero INNER JOIN acabados ON articulo.ACABADO = acabados.numero INNER JOIN marcas ON articulo.MARCA = marcas.numero INNER JOIN sublinea ON articulo.SUBLINEA = sublinea.numero INNER JOIN lineas ON articulo.LINEA = lineas.NUMERO inner join corridas on corridas.id=articulo.corrida Where (Existen.Tienda In (Select Tienda From ##TempTienda)) And (Existen.Cantidad <> 0) and articulo.barcode in( ''' + @Barcode + ''') ' + @CompTalla + @CompTiend + ' Order by Talla'\n" +
+                        "EXECUTE (@SQL)\n" +
+                        "\n" +
+                        "OPEN temp_cursor\n" +
+                        "\n" +
+                        "FETCH NEXT\n" +
+                        "FROM temp_cursor\n" +
+                        "INTO @Talla\n" +
+                        "\n" +
+                        "SET @Tallas = ''\n" +
+                        "SET @TallasSort = ''\n" +
+                        "SET @TallasUpdate = ''\n" +
+                        "\n" +
+                        "WHILE @@FETCH_STATUS = 0\n" +
+                        "BEGIN\n" +
+                        "\tSET @SiHay = 1\n" +
+                        "\tSET @Tallas = @Tallas + 'Isnull([' + @Talla + '], 0) + '\n" +
+                        "\tSET @TallasSort = @TallasSort + 'Isnull([' + @Talla + '],0) as [' + @Talla + '],'\n" +
+                        "\tSET @TallasUpdate = @TallasUpdate + '[' + @Talla + '] = (Select top 1 Cantidad From ##TempTallas Where (Barcode = ##Temp.Barcode) And (Tienda = ##Temp.Tienda) And (Talla = ' + @Talla + ')),'\n" +
+                        "\tSET @SQL = 'ALTER TABLE ##Temp ADD [' + @Talla + '] int NULL '\n" +
+                        "\tEXECUTE (@SQL)\n" +
+                        "\n" +
+                        "\tFETCH NEXT\n" +
+                        "\tFROM temp_cursor\n" +
+                        "\tINTO @Talla\n" +
+                        "END\n" +
+                        "\n" +
+                        "CLOSE temp_cursor\n" +
+                        "\n" +
+                        "DEALLOCATE temp_cursor\n" +
+                        "\n" +
+                        "IF @SiHay = 1\n" +
+                        "BEGIN\n" +
+                        "\tBEGIN TRY\n" +
+                        "\t\tSET @Tallas = Left(@Tallas, Len(@Tallas) - 2)\n" +
+                        "\t\tSET @TallasUpdate = Left(@TallasUpdate, Len(@TallasUpdate) - 1)\n" +
+                        "\n" +
+                        "\t\tALTER TABLE ##Temp ADD Total INT NULL\n" +
+                        "\n" +
+                        "\t\tSET @SQL = 'Insert Into ##Temp (Barcode, Tienda, Estilo, Color, Acabado, Marca, SubLinea, Linea, Corrida, Temporada, Basico) SELECT distinct existen.BARCODE, tiendas.NOMBRE AS Tienda, articulo.ESTILO, colores.COLOR, acabados.ACABADO, marcas.MARCA, sublinea.SUBLINEA, Lineas.Linea, Corridas.Nombre, Temporad.Temporad, isnull(Articulo.basico,0) AS Basico FROM existen INNER JOIN tiendas ON existen.TIENDA = tiendas.NUMERO INNER JOIN articulo ON existen.BARCODE = articulo.BARCODE INNER JOIN colores ON articulo.COLOR = colores.numero INNER JOIN acabados ON articulo.ACABADO = acabados.numero INNER JOIN marcas ON articulo.MARCA = marcas.numero INNER JOIN sublinea ON articulo.SUBLINEA = sublinea.numero INNER JOIN lineas ON articulo.LINEA = lineas.NUMERO inner join corridas on corridas.id=articulo.corrida inner join temporad on temporad.numero=articulo.temporad Where (Existen.Tienda In (Select Tienda From ##TempTienda)) And (Existen.Cantidad <> 0) and articulo.barcode in (''' + @Barcode + \n" +
+                        "\t\t\t''') Order by articulo.ESTILO, colores.COLOR, acabados.ACABADO, tiendas.NOMBRE'\n" +
+                        "\t\tEXECUTE (@SQL)\n" +
+                        "\n" +
+                        "\t\t--SELECT * INTO dbo.datos FROM ##Temp \n" +
+                        "\t\t--DECLARE temp_cursor CURSOR FOR \n" +
+                        "\t\tSET @SQL = 'Update ##Temp Set ' + @TallasUpdate\n" +
+                        "\t\tEXECUTE (@SQL)\n" +
+                        "\n" +
+                        "\t\tSET @SQL = 'Update ##Temp Set Total = ' + @Tallas\n" +
+                        "\t\tEXECUTE (@SQL)\n" +
+                        "\n" +
+                        "\t\t--Set @SQL = 'Select Tienda, Estilo, Color, Acabado, Marca, SubLinea, Linea,Corrida,Temporada,Basico,' + @TallasSort + ' Total From ##Temp  '\n" +
+                        "\t\tSET @SQL = 'Select Tienda, ' + @TallasSort + ' Total From ##Temp'\n" +
+                        "\t\tEXECUTE (@SQL)\n" +
+                        "\tEND TRY\n" +
+                        "\tBEGIN CATCH\n" +
+                        "\t\tSELECT ERROR_NUMBER() AS ErrorNumber\n" +
+                        "\t\t\t,ERROR_SEVERITY() AS ErrorSeverity\n" +
+                        "\t\t\t,ERROR_STATE() AS ErrorState\n" +
+                        "\t\t\t,ERROR_PROCEDURE() AS ErrorProcedure\n" +
+                        "\t\t\t,ERROR_LINE() AS ErrorLine\n" +
+                        "\t\t\t,ERROR_MESSAGE() AS ErrorMessage;\n" +
+                        "\tEND CATCH\n" +
+                        "END\n" +
+                        "\n" +
+                        "IF object_id('tempdb..##TempTallas') IS NOT NULL\n" +
+                        "BEGIN\n" +
+                        "\tDROP TABLE ##TempTallas\n" +
+                        "END\n" +
+                        "\n" +
+                        "IF object_id('tempdb..##TempTienda') IS NOT NULL\n" +
+                        "BEGIN\n" +
+                        "\tDROP TABLE ##TempTienda\n" +
+                        "END\n" +
+                        "\n" +
+                        "IF object_id('tempdb..##Temp') IS NOT NULL\n" +
+                        "BEGIN\n" +
+                        "\tDROP TABLE ##Temp\n" +
+                        "END";
+                st.executeUpdate(sql);
+
+                st.close();
+
+
+            }catch (Exception e ){
+                e.getMessage();
+            }
+
+
+            return null;
+        }
     }
+
+
+
+    private class registrarToken extends AsyncTask<Void,Void,Void>
+    {
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+            FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                @Override
+                public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                    if (!task.isSuccessful()) {
+                        Log.w(TAG, "getInstanceId failed", task.getException());
+                        return;
+                    }
+
+                    // Get new Instance ID token
+                    token = task.getResult().getToken();
+
+                    // Log and toast
+                    @SuppressLint({"StringFormatInvalid", "LocalSuppress"}) String msg = getString(R.string.project_id, token);
+                    Log.d(TAG, msg);
+
+                }
+            });
+            return null;
+        }
+
+    }
+
+
+}
 
 
 

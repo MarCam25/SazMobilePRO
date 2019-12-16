@@ -1,254 +1,224 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="195dp"
     android:background="#f4f4f3"
 
     >
     <LinearLayout
+        android:id="@+id/idLinearS"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="195dp"
         android:orientation="vertical"
-        android:background="#f4f4f3"
+
         >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:orientation="vertical"
+        android:layout_marginLeft="10dp"
+        >
+
         <LinearLayout
-            android:id="@+id/idLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:background="#f4f4f3"
             >
-            <LinearLayout
-                android:layout_width="wrap_content"
+            <TextView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
+                android:text="Estilo: "
+                android:textColor="#3f3f40"
+                android:textSize="20dp"
+                android:layout_weight="1"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Color:"
+                android:textSize="20dp"
+                android:textColor="#3f3f40"
+                android:layout_weight="1"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/idEstiloS"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="GBOX"
+                android:textSize="18dp"
+                android:textColor="#3f3f40"
+                android:layout_weight="1"
+                />
+            <TextView
+                android:id="@+id/idColorS"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="GEOX NAVY"
+                android:textSize="18dp"
+                android:textColor="#3f3f40"
+                android:layout_weight="1"
+
+                />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="20dp"
+                android:text="Marca:"
+                android:textColor="#3f3f40"
+                android:layout_weight="1"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Punto: "
+                android:textSize="20dp"
+                android:textColor="#3f3f40"
+                android:layout_weight="1"
+
+                />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+            <TextView
+                android:id="@+id/idMarcaS"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="GEOX"
+                android:textSize="18dp"
+                android:textColor="#3f3f40"
+               android:layout_weight="1"
+                />
+            <TextView
+                android:id="@+id/idPuntoS"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="30.0"
+                android:textSize="18dp"
+                android:textColor="#3f3f40"
+                android:layout_weight="1"
+
+
+                />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Acabado:"
+                android:textSize="20dp"
+                android:textColor="#3f3f40"
+                android:layout_weight="1"
+                />
+
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+            <TextView
+                android:id="@+id/idAcabadoS"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="GEOX NAVY"
+                android:textSize="18dp"
+                android:textColor="#3f3f40"
+                android:layout_weight="1"
+                />
+
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+            <TextView
+                android:id="@+id/idBarS"
+                android:layout_width="1dp"
+                android:layout_height="1dp"
+                android:text="Color:"
+                android:textSize="20dp"
+                android:textColor="#ffffff"
                 android:background="#f4f4f3"
-                >
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Estilo: "
-                    android:textColor="#3f3f40"
-                    android:textSize="20dp"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginLeft="15dp"
-
-                    />
-
-                <TextView
-                    android:id="@+id/idEstilo"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="GBOX"
-                    android:textSize="18dp"
-                    android:textColor="#3f3f40"
-                    android:layout_marginTop="1dp"
-                    android:layout_marginLeft="15dp"
-
-                    />
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    >
-                    <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="20dp"
-                    android:text="Marca:"
-                    android:textColor="#3f3f40"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginLeft="15dp"
-                    />
-                    <TextView
-                        android:id="@+id/idMarca"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="GEOX"
-                        android:textSize="18dp"
-                        android:textColor="#3f3f40"
-                        android:layout_marginTop="1dp"
-                        android:layout_marginLeft="15dp"
-                        />
-
-
-
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    >
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-
-                        android:textColor="#3f3f40"
-                        android:textSize="20dp"
-                        android:layout_marginTop="15dp"
-                        android:layout_marginLeft="15dp"
-
-                        />
-
-                    <TextView
-                        android:id="@+id/idSubTotal"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-
-                        android:textSize="18dp"
-                        android:textColor="#3f3f40"
-                        android:layout_marginTop="1dp"
-                        android:layout_marginLeft="15dp"
-                        android:textStyle="bold"
-                        />
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-
-            <LinearLayout
+                android:layout_marginTop="15dp"
+                android:layout_marginLeft="15dp"
+                android:textStyle="bold"
+                />
+            <TextView
+                android:id="@+id/idImagenS"
+                android:layout_width="1dp"
+                android:layout_height="1dp"
+                android:textSize="20dp"
+                android:textColor="#ffffff"
+                android:layout_marginTop="15dp"
+                android:layout_marginLeft="15dp"
+                android:textStyle="bold"
+                />
+            <TextView
+                android:id="@+id/idSubTotalS"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="30dp"
-                android:orientation="vertical">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Color:"
-                    android:textSize="20dp"
-                    android:textColor="#3f3f40"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginLeft="15dp"
-                    />
-                <TextView
-                    android:id="@+id/idColor"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="GEOX NAVY"
-                    android:textSize="18dp"
-                    android:textColor="#3f3f40"
-                    android:layout_marginTop="1dp"
-                    android:layout_marginLeft="15dp"
-                    />
 
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Punto: "
-                        android:textSize="20dp"
-                        android:textColor="#3f3f40"
-                        android:layout_marginTop="15dp"
-                        android:layout_marginLeft="15dp"
-
-                        />
-
-                    <TextView
-                        android:id="@+id/idPunto"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="30.0"
-                        android:textSize="18dp"
-                        android:textColor="#3f3f40"
-                        android:layout_marginTop="1dp"
-                        android:layout_marginLeft="15dp"
-
-                        />
-
-
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-
-                </LinearLayout>
-                <TextView
-                    android:id="@+id/id"
-                    android:layout_width="10dp"
-                    android:layout_height="10dp"
-                    android:text="Color:"
-                    android:textSize="20dp"
-                    android:textColor="#f4f4f3"
-                    android:layout_marginTop="15dp"
-                    android:background="#f4f4f3"
-                    android:layout_marginLeft="15dp"
-                    android:textStyle="bold"
-                    />
-                <TextView
-                    android:id="@+id/idBar"
-                    android:layout_width="1dp"
-                    android:layout_height="1dp"
-                    android:text="Color:"
-                    android:textSize="20dp"
-                    android:textColor="#f4f4f3"
-                    android:background="#f4f4f3"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginLeft="15dp"
-                    android:textStyle="bold"
-                    />
-
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="30dp"
+                android:textSize="18dp"
+                android:textColor="#3f3f40"
+                android:layout_marginTop="1dp"
+                android:layout_marginLeft="15dp"
+                android:textStyle="bold"
+                />
+            <TextView
+                android:id="@+id/idS"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:text="Color:"
+                android:textSize="20dp"
+                android:textColor="#ffffff"
+                android:layout_marginTop="15dp"
                 android:background="#f4f4f3"
-                android:orientation="vertical">
+                android:layout_marginLeft="15dp"
+                android:textStyle="bold"
+                />
 
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Acabado:"
-                    android:textSize="20dp"
-                    android:textColor="#3f3f40"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginLeft="15dp"
-                    />
-                <TextView
-                    android:id="@+id/idAcabado"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="GEOX NAVY"
-                    android:textSize="18dp"
-                    android:textColor="#3f3f40"
-                    android:layout_marginTop="1dp"
-                    android:layout_marginLeft="15dp"
-                    />
-
-                <TextView
-                    android:id="@+id/idImagen"
-                    android:layout_width="10dp"
-                    android:layout_height="10dp"
-                    android:textSize="20dp"
-                    android:textColor="#f4f4f3"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginLeft="15dp"
-                    android:textStyle="bold"
-                    />
-            </LinearLayout>
 
 
 
         </LinearLayout>
 
+
+    </LinearLayout>
+
+
         <TextView
             android:layout_width="1000dp"
             android:layout_height="9dp"
             android:layout_marginTop="5dp"
-            android:background="#3f3f40" />
-
+            android:background="#004d73" />
     </LinearLayout>
+
 </android.support.constraint.ConstraintLayout>

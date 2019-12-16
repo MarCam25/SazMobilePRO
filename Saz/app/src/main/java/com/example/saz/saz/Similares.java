@@ -10,7 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.saz.saz.Modelo.AdaptadorSimilares;
+import com.example.saz.saz.utilidades.AdaptadorSimilares;
 import com.example.saz.saz.Modelo.DatosLupita;
 import com.example.saz.saz.Modelo.ModeloEmpresa;
 import com.example.saz.saz.Modelo.ModeloSimilar;
@@ -33,6 +33,7 @@ public class Similares extends AppCompatActivity {
     RecyclerView recyclerView;
     String tienda;
     String where=" WHERE ";
+    public static AdaptadorSimilares adapter;
     int marcaV=0,  temporadaV=0, clasificacionV=0,  sublineaV=0, suelaV=0,  taconV=0,  colorV=0,  acabadoV=0,  corridaV=0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +46,7 @@ public class Similares extends AppCompatActivity {
         ultimaVez();
 
 
+
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         validar();
         if(marcaV==0 &&  temporadaV==0&& clasificacionV==0 &&  sublineaV==0 && suelaV==0 && taconV==0 &&  colorV==0 &&  acabadoV==0 && corridaV==0) {
@@ -53,8 +55,9 @@ public class Similares extends AppCompatActivity {
             consultarSimilares();
         }
 
-        AdaptadorSimilares adapter=new AdaptadorSimilares(listaSimilar);
+        adapter=new AdaptadorSimilares(listaSimilar);
         recyclerView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
 
     }
 
@@ -93,12 +96,11 @@ public class Similares extends AppCompatActivity {
                 validar="hola";
 
             }
+            st.close();
             if(validar!=null){
 
             }else{
-                Toast toast = Toast.makeText(getApplication(), "Este producto no cuenta con similares", Toast.LENGTH_LONG);
-                TextView x = (TextView) toast.getView().findViewById(android.R.id.message);
-                x.setTextColor(Color.YELLOW); toast.show();
+                Toast.makeText(getApplication(), "Este producto no cuenta con similares", Toast.LENGTH_LONG).show();
             }
 
         } catch (SQLException xe) {
@@ -237,6 +239,7 @@ public class Similares extends AppCompatActivity {
 
 
             }
+            st.close();
 
             // Toast.makeText(Principal.this,"Inicio de sesion Exitosa...!!!: " + empresa, Toast.LENGTH_LONG).show();
         } catch (Exception e) {
@@ -263,6 +266,7 @@ public class Similares extends AppCompatActivity {
 
 
             }
+            st.close();
 
             // Toast.makeText(Principal.this,"Inicio de sesion Exitosa...!!!: " + empresa, Toast.LENGTH_LONG).show();
         } catch (Exception e) {
@@ -289,6 +293,7 @@ public class Similares extends AppCompatActivity {
 
 
             }
+            st.close();
 
             // Toast.makeText(Principal.this,"Inicio de sesion Exitosa...!!!: " + empresa, Toast.LENGTH_LONG).show();
         } catch (Exception e) {

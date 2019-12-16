@@ -74,25 +74,9 @@ public class ListaComandero extends AppCompatActivity {
                 mr.setUbicacion(rs.getString(5));
                 mr.setLlave(rs.getString(6));
 
-
-
-
-
-
-
-
                 listaResumen.add(mr);
-
-
-
-
-
-
-
-
-
             }
-
+            st.close();
             // Toast.makeText(Principal.this,"Inicio de sesion Exitosa...!!!: " + empresa, Toast.LENGTH_LONG).show();
         } catch (Exception e) {
             Toast.makeText(this, "error al seleccionar ", Toast.LENGTH_SHORT).show();

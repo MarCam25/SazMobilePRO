@@ -20,14 +20,14 @@ import com.example.saz.saz.utilidades.Utilidades;
 
 public class Configuraciones extends AppCompatActivity {
 
-    private static  CheckBox CheckBusqueda;
+    private static  CheckBox CheckBusqueda, CheckBusqueda2;;
 
 
 
 
     Button guardar;
 
-    int  buscador=0;
+    int  buscador=0, buscador2=0;
 
     CheckBox checkMarca, checkTemporada, checkClasificacion, checkSubLinea, checkSuela, checkTacon, checkColor, checkAcabado, checkCorrida;
 
@@ -38,8 +38,8 @@ public class Configuraciones extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_configuraciones);
 
-        CheckBusqueda=(CheckBox)findViewById(R.id.CheckBusqueda);
         guardar=(Button)findViewById(R.id.btnGuardar);
+        CheckBusqueda=(CheckBox)findViewById(R.id.CheckBusqueda);
         checkMarca=(CheckBox)findViewById(R.id.CheckMarca);
         checkTemporada=(CheckBox)findViewById(R.id.CheckTemporada);
         checkClasificacion=(CheckBox)findViewById(R.id.CheckClas);
@@ -49,6 +49,29 @@ public class Configuraciones extends AppCompatActivity {
         checkColor=(CheckBox)findViewById(R.id.CheckColor);
         checkAcabado=(CheckBox)findViewById(R.id.CheckAcabado);
         checkCorrida=(CheckBox)findViewById(R.id.CheckCorrida);
+        CheckBusqueda2=(CheckBox)findViewById(R.id.CheckBusqueda2);
+
+        getSupportActionBar().setTitle("SazMobile PRO -Configuraciones-");
+
+
+
+
+        CheckBusqueda.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CheckBusqueda2.setChecked(false);
+            }
+        });
+
+
+
+        CheckBusqueda2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CheckBusqueda.setChecked(false);
+            }
+        });
+
 
         getSupportActionBar().setTitle("SazMobile Lite -Configuraciones-");
 
@@ -60,17 +83,27 @@ public class Configuraciones extends AppCompatActivity {
             CheckBusqueda.setChecked(true);
         }
 
-
+        if(buscador2==1){
+            CheckBusqueda2.setChecked(true);
+        }
 
         guardar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dropCheckBuscador();
 
+
                 deleteSimilares();
 
                 if(CheckBusqueda.isChecked() == true){
                     insertCheckBuscador();
+
+                }
+
+
+
+                if(CheckBusqueda2.isChecked() == true){
+                    insertCheckBuscador2();
 
                 }
 
@@ -103,11 +136,13 @@ public class Configuraciones extends AppCompatActivity {
                 }
 
 
+
                 if(checkSuela.isChecked() == true){
                     consultarSimilares("suela");
                 } else  if(checkSuela.isChecked()==false){
                     deleteSimilar("suela");
                 }
+
 
 
                 if(checkTacon.isChecked() == true){
@@ -146,14 +181,18 @@ public class Configuraciones extends AppCompatActivity {
 
                 Toast toast = Toast.makeText(getApplication(), "Configuración guardada", Toast.LENGTH_LONG);
                 TextView x = (TextView) toast.getView().findViewById(android.R.id.message);
-                x.setTextColor(Color.YELLOW); toast.show();
+                x.setTextColor(Color.WHITE); toast.show();
             }
         });
 
 
 
 
+
+
+
     }
+
 
 
     public void insertCheckBuscador() {
@@ -165,8 +204,54 @@ public class Configuraciones extends AppCompatActivity {
 
 
     }
+    public void insertCheckBuscador2() {
+        ConexionSQLiteHelper conn = new ConexionSQLiteHelper(this, "db tienda", null, 1);
+        SQLiteDatabase db = conn.getWritableDatabase();
 
 
+        db.execSQL("INSERT INTO  "+Utilidades.TABLA_CHECKB +" ("+Utilidades.CAMPO_BUSCADOR2+") VALUES('1')");
+
+
+    }
+
+
+    public void consultarBuscador(){
+        int buscadore=0;
+        String contenedor="";
+        try {
+            ConexionSQLiteHelper conn = new ConexionSQLiteHelper(getApplicationContext(), "db tienda", null, 1);
+            SQLiteDatabase db = conn.getReadableDatabase();
+
+            String sql="SELECT "+Utilidades.CAMPO_BUSCADOR2+" FROM "+Utilidades.TABLA_CHECKB;
+            Cursor cursor = db.rawQuery(sql, null);
+            while (cursor.moveToNext()) {
+                contenedor= cursor.getString(0);
+            }
+
+            if(contenedor==null) {
+
+                Principal.busqueda2 = false;
+                Principal.passConsulta = true;
+
+            }else{
+                buscadore=Integer.parseInt(contenedor);
+                if (buscadore == 1) {
+                    Principal.busqueda2 = true;
+                    Principal.passConsulta = false;
+                } else {
+                    Principal.busqueda2 = false;
+                    Principal.passConsulta = true;
+                }
+            }
+        }catch (Exception e){
+
+            Principal.busqueda2 = false;
+            Principal.passConsulta = true;
+        } finally {
+
+        }
+
+    }
 
 
 
@@ -177,31 +262,40 @@ public class Configuraciones extends AppCompatActivity {
 
         db.execSQL("DELETE FROM "+ Utilidades.TABLA_CHECKB);
 
-
     }
 
 
-    public void buscador(){
 
+    public void buscador(){
+        String contenedor="",contenedor2="";
         try {
             ConexionSQLiteHelper conn = new ConexionSQLiteHelper(getApplicationContext(), "db tienda", null, 1);
             SQLiteDatabase db = conn.getReadableDatabase();
 
-            String sql="SELECT "+Utilidades.CAMPO_BUSCADOR+" FROM "+Utilidades.TABLA_CHECKB;
+            String sql="SELECT "+Utilidades.CAMPO_BUSCADOR+","+Utilidades.CAMPO_BUSCADOR2+" FROM "+Utilidades.TABLA_CHECKB;
             Cursor cursor = db.rawQuery(sql, null);
             while (cursor.moveToNext()) {
-                buscador= Integer.parseInt(cursor.getString(0));
+                contenedor= cursor.getString(0);
+                contenedor2= cursor.getString(1);
+
+                if(contenedor==null)
+                {
+
+                }else{
+                    buscador=Integer.parseInt(contenedor);
+                }
+
+                if(contenedor2==null)
+                {
+
+                }else{
+                    buscador2=Integer.parseInt(contenedor2);
+                }
+
             }
         }catch (Exception e){
 
-            Toast toast = Toast.makeText(getApplicationContext(), "La versión nueva de SazMobile LITE se ha instalado", Toast.LENGTH_LONG);
-            TextView x = (TextView) toast.getView().findViewById(android.R.id.message);
-            x.setTextColor(Color.YELLOW); toast.show();
-            Intent intent = new Intent(getApplicationContext(), Principal.class);
-            getApplicationContext().deleteDatabase("db tienda");
-            startActivity(intent);
-
-        } finally {
+            e.getMessage();
 
         }
 
@@ -228,15 +322,15 @@ public class Configuraciones extends AppCompatActivity {
         ConexionSQLiteHelper conn = new ConexionSQLiteHelper(this, "db tienda", null, 1);
         SQLiteDatabase db = conn.getWritableDatabase();
 
-
         db.execSQL("UPDATE "+ Utilidades.TABLA_SIMILAR+ " SET "+similar+"=0" );
 
-
     }
+
 
     public void consultarSimilares(String similar){
         int marca=0,  temporada=0, clasificacion=0,  sublinea=0, suela=0,  tacon=0,  color=0,  acabado=0,  corrida=0;
         String marcaS=">0",  temporadaS=">0", clasificacionS=">0",  sublineaS=">0", suelaS=">0",  taconS=">0",  colorS=">0",  acabadoS=">0",  corridaS=">0";
+
 
         ConexionSQLiteHelper conn = new ConexionSQLiteHelper(this, "db tienda", null, 1);
         SQLiteDatabase db = conn.getReadableDatabase();
@@ -332,10 +426,12 @@ public class Configuraciones extends AppCompatActivity {
                 acabado=cursor.getInt(8);
                 corrida=cursor.getInt(9);
             }
+
+
         }catch (Exception e){
             Toast toast = Toast.makeText(getApplication(), "La versión nueva de SazMobile POS se ha instalado", Toast.LENGTH_LONG);
             TextView x = (TextView) toast.getView().findViewById(android.R.id.message);
-            x.setTextColor(Color.YELLOW); toast.show();
+            x.setTextColor(Color.WHITE); toast.show();
             Intent intent = new Intent(getApplicationContext(), Principal.class);
             startActivity(intent);
             getApplicationContext().deleteDatabase("db tienda");
@@ -391,7 +487,6 @@ public class Configuraciones extends AppCompatActivity {
 
     }
 
-
     public void deleteSimilares(){
         ConexionSQLiteHelper conn = new ConexionSQLiteHelper(this, "db tienda", null, 1);
         SQLiteDatabase db = conn.getWritableDatabase();
@@ -400,6 +495,8 @@ public class Configuraciones extends AppCompatActivity {
         db.execSQL(sql );
 
     }
+
+
 
 
 

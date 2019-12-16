@@ -31,7 +31,10 @@ public class AdaptadorAreas extends  RecyclerView.Adapter<AdaptadorAreas.ViewHol
     ModeloEmpresa me=new ModeloEmpresa();
     ConexionBDCliente bdc=new ConexionBDCliente();
 
-   public AdaptadorAreas(ArrayList<Areas> listaAreas){ this.listaAreas=listaAreas; };
+   public AdaptadorAreas(ArrayList<Areas> listaAreas){
+       this.listaAreas=listaAreas;
+
+   }
 
 
     @Override
@@ -40,8 +43,9 @@ public class AdaptadorAreas extends  RecyclerView.Adapter<AdaptadorAreas.ViewHol
         return new ViewHolderAreas(view);
     }
 
+
     @Override
-    public void onBindViewHolder(final ViewHolderAreas holder, int position) {
+    public void onBindViewHolder(final ViewHolderAreas holder,final int position) {
         holder.idtienda.setText(listaAreas.get(position).getIdTienda());
         holder.nombre.setText(listaAreas.get(position).getNombreArea());
         holder.idArea.setText(listaAreas.get(position).getIdArea());
@@ -58,8 +62,11 @@ public class AdaptadorAreas extends  RecyclerView.Adapter<AdaptadorAreas.ViewHol
                             public void onClick(DialogInterface dialog, int which) {
 
                                 eliminar(holder);
-                                Intent intent=new Intent(holder.context,RegistroArea.class);
-                                holder.context.startActivity(intent);
+                               // Intent intent=new Intent(holder.context,RegistroArea.class);
+                                //holder.context.startActivity(intent);
+                                removeItem(position);
+                                notifyDataSetChanged();
+
 
                             }
                         }).setNegativeButton("CANCELAR", new DialogInterface.OnClickListener() {
@@ -93,6 +100,7 @@ public class AdaptadorAreas extends  RecyclerView.Adapter<AdaptadorAreas.ViewHol
             Statement st = bdc.conexionBD(me.getServer(),me.getBase(),me.getUsuario(),me.getPass()).createStatement();
             String sql="DELETE FROM AreasDeControl WHERE idArea="+holder.idArea.getText().toString();
             st.executeUpdate(sql);
+            st.close();
             Toast.makeText(holder.context, "Área eliminada", Toast.LENGTH_SHORT).show();
 
 
@@ -107,6 +115,7 @@ public class AdaptadorAreas extends  RecyclerView.Adapter<AdaptadorAreas.ViewHol
             Statement st = bdc.conexionBD(me.getServer(),me.getBase(),me.getUsuario(),me.getPass()).createStatement();
             String sql="DELETE FROM ZonasDeSurtido WHERE idArea="+holder.idArea.getText().toString();
             st.executeUpdate(sql);
+            st.close();
             Toast.makeText(holder.context, "Área eliminada", Toast.LENGTH_SHORT).show();
 
 
@@ -114,6 +123,11 @@ public class AdaptadorAreas extends  RecyclerView.Adapter<AdaptadorAreas.ViewHol
 
             Toast.makeText(holder.context, "Uups...!!! Nose puede eliminar esta Area", Toast.LENGTH_SHORT).show();
         }
+    }
+    public void removeItem(int position) {
+        this.listaAreas.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, getItemCount() - position);
     }
 
     public void editar(final ViewHolderAreas holder){

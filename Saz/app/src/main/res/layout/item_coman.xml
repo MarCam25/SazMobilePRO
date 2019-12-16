@@ -85,7 +85,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Ubicacion: "
+                        android:text="Ubicación: "
                         android:textColor="#3f3f40"
                         android:textSize="20dp"
                         android:layout_marginTop="15dp"

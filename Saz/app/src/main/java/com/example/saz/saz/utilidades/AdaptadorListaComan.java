@@ -13,6 +13,11 @@ import android.widget.Button;
 import android.widget.TextView;
 
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.saz.saz.conexion.ConexionBDCliente;
 import com.example.saz.saz.Modelo.ModeloEmpresa;
 import com.example.saz.saz.Modelo.ModeloResumen;
@@ -20,9 +25,13 @@ import com.example.saz.saz.Principal;
 import com.example.saz.saz.R;
 import com.example.saz.saz.menu;
 
+import org.json.JSONObject;
+
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AdaptadorListaComan extends RecyclerView.Adapter<AdaptadorListaComan.ViewHolder> {
     ArrayList<ModeloResumen> listResumen;
@@ -43,7 +52,7 @@ public class AdaptadorListaComan extends RecyclerView.Adapter<AdaptadorListaComa
 
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         holder.estilo.setText(listResumen.get(position).getEstilo());
         holder.numero.setText(listResumen.get(position).getId());
         holder.color.setText(listResumen.get(position).getColor());
@@ -60,18 +69,69 @@ public class AdaptadorListaComan extends RecyclerView.Adapter<AdaptadorListaComa
                 progressDialog.setIcon(R.mipmap.ic_launcher);
                 progressDialog.setMessage("Surtiendo pedido...");
                 progressDialog.show();
-              surtir(holder);
-              verificarOrden(holder);
-              upDate(holder);
-                Principal.location=1;
-              Intent intent=new Intent(context,menu.class);
-              context.startActivity(intent);
+
+
+
+                getToken(holder);
+                surtir(holder);
+                verificarOrden(holder);
+                upDate(holder);
+                removeItem(position);
+                notifyDataSetChanged();
+
+
 
 
             }
         });
 
     }
+    public void getToken(final ViewHolder holder){
+        String token=null;
+        try {
+            Statement st = bdc.conexionBD(me.getServer(),me.getBase(),me.getUsuario(),me.getPass()).createStatement();
+            String sql="select distinct token from comandero c inner join AreasAsignadas aa on c.empleado=aa.idEmpleado where numero="+holder.numero.getText();
+            ResultSet rs=st.executeQuery(sql);
+
+            while (rs.next()){
+                token=rs.getString(1);
+            }
+            st.close();
+            bdc.cierraConexion();
+            notificar(token,holder);
+        } catch (Exception e) {
+
+        }
+    }
+
+    public void notificar(String token, final ViewHolder holder){
+        String url = "http://sirupa.mine.nu:3000/api/firebase";
+
+        Map<String, String> params = new HashMap();
+        params.put("key", token);
+
+        params.put("noti", "Tu producto  "+holder.estilo.getText()+" ha sido surtido");
+
+
+
+        JSONObject parameters = new JSONObject(params);
+
+        JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.POST, url, parameters, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                //TODO: handle success
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+                //TODO: handle failure
+            }
+        });
+
+        Volley.newRequestQueue(context).add(jsonRequest);
+    }
+
 
     public void verificarOrden(final AdaptadorListaComan.ViewHolder holder){
         String numero=null;
@@ -81,10 +141,13 @@ public class AdaptadorListaComan extends RecyclerView.Adapter<AdaptadorListaComa
             String sql="SELECT numero FROM comanderoDet WHERE numero="+holder.numero.getText()+" and [status]=0";
             ResultSet rs=st.executeQuery(sql);
 
+
             while (rs.next()){
                  numero=rs.getString(1);
 
             }
+
+            st.close();
 
             surtirOrdenCompleta(holder,numero);
 
@@ -100,6 +163,7 @@ public void surtirOrdenCompleta(final AdaptadorListaComan.ViewHolder holder, Str
                 Statement st = bdc.conexionBD(me.getServer(),me.getBase(),me.getUsuario(),me.getPass()).createStatement();
                 String sql="UPDATE comandero SET [status]=1 WHERE numero="+holder.numero.getText();
                 st.executeUpdate(sql);
+                st.close();
 
 
 
@@ -112,11 +176,18 @@ public void surtirOrdenCompleta(final AdaptadorListaComan.ViewHolder holder, Str
 
 }
 
+    public void removeItem(int position) {
+        this.listResumen.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, getItemCount() - position);
+    }
+
     public void surtir(final AdaptadorListaComan.ViewHolder holder){
         try {
             Statement st = bdc.conexionBD(me.getServer(),me.getBase(),me.getUsuario(),me.getPass()).createStatement();
             String sql="UPDATE comanderoDet SET [status]=1 WHERE estilo='"+holder.estilo.getText()+"' AND llave='"+holder.llave.getText()+"'";
             st.executeUpdate(sql);
+            st.close();
 
 
         } catch (Exception e) {
@@ -157,6 +228,7 @@ public void surtirOrdenCompleta(final AdaptadorListaComan.ViewHolder holder, Str
             Statement st = bdc.conexionBD(me.getServer(),me.getBase(),me.getUsuario(),me.getPass()).createStatement();
             String sql="Update comanderoLog set hora=GETDATE() where numero="+holder.numero.getText();
             st.executeUpdate(sql);
+            st.close();
 
 
         } catch (Exception e) {

@@ -51,6 +51,7 @@ ImageView imagenView;
                 imagenView.setImageBitmap(bmap);
             }
 
+            st.close();
         } catch (Exception e) {
             Toast.makeText(getApplicationContext(), "Error al mostrar la imagen ", Toast.LENGTH_SHORT).show();
         }

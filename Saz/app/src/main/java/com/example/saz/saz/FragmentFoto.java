@@ -27,8 +27,7 @@ public class FragmentFoto extends Fragment {
     String style, valores, numero, marca, id;
     String [] separado;
     String idImagen;
-    TextView imagen;
-    String foto;
+
     ImageView imagenView;
 
     String empress;

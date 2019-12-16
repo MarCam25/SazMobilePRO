@@ -28,6 +28,8 @@ import com.example.saz.saz.R;
 import com.example.saz.saz.Resumen;
 import com.example.saz.saz.conexion.ConexionSqlServer;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -61,7 +63,7 @@ public class AdapterResumen extends RecyclerView.Adapter<AdapterResumen.ViewHold
 
 
     @Override
-    public void onBindViewHolder(final ViewHolderResumen holder, int position) {
+    public void onBindViewHolder(final ViewHolderResumen holder, final int position) {
         holder.estilo.setText(listResumen.get(position).getEstilo());
         holder.marca.setText(listResumen.get(position).getMarca());
         holder.color.setText(listResumen.get(position).getColor());
@@ -75,19 +77,6 @@ public class AdapterResumen extends RecyclerView.Adapter<AdapterResumen.ViewHold
         holder.acabado.setText(listResumen.get(position).getAcabado());
 
 
-    /*    holder.editar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ModeloNumeroOrden mno=new ModeloNumeroOrden();
-                mno.setEstilo(holder.estilo.getText().toString());
-                regresarExistencias(holder);
-                eliminarPedido(holder);
-
-
-                Intent intent = new Intent(context, Consulta.class);
-                context.startActivity(intent);
-            }
-        });*/
 
         holder.foto.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,11 +101,13 @@ public class AdapterResumen extends RecyclerView.Adapter<AdapterResumen.ViewHold
                         if(Integer.parseInt(holder.cant.getText().toString())>=1) {
                             double precioUnidad=(Double.parseDouble(holder.total.getText().toString())/cantidad);
                             cantidad--;
+
                             holder.cant.setText(String.valueOf(cantidad));
                             double precio = Double.parseDouble(holder.total.getText().toString()) - precioUnidad;
-                            holder.total.setText(String.valueOf(precio));
+
                             upDate(holder, cantidad, precio);
                             upDateExistenciasMenos(holder);
+                            consultarPrecio(holder);
 
                         }
                     }
@@ -139,15 +130,14 @@ public class AdapterResumen extends RecyclerView.Adapter<AdapterResumen.ViewHold
 
                         double precioUnidad=(Double.parseDouble(holder.total.getText().toString())/cantidad);
                         cantidad++;
+
                         holder.cant.setText(String.valueOf(cantidad));
 
                         double  precio=Double.parseDouble(holder.total.getText().toString())+precioUnidad;
-                        holder.total.setText(String.valueOf(precio));
+
                         upDate(holder,cantidad,precio);
                         upDateExistencias(holder);
-
-
-
+                        consultarPrecio(holder);
 
                     }else{
 
@@ -193,22 +183,13 @@ public class AdapterResumen extends RecyclerView.Adapter<AdapterResumen.ViewHold
                                 ConsultaF.pre=resImporte;
                                 ConsultaF.importeTXT.setText(String.valueOf(resImporte));
 
-               /* int resExist, existenciaAnterior=ConsultaF.existencias,existenciasActual=Integer.parseInt(holder.cant.getText().toString());
-                resExist=existenciaAnterior+existenciasActual;
-                ConsultaF.existencias=resExist;
-                ConsultaF.existenciasTXT.setText(String.valueOf(resExist));*/
-
-
-
-
-
                                 regresarExistencias(holder);
 
                                 String id= holder.id.getText().toString();
                                 eliminar(holder);
-                                Intent intent=new Intent(context,Resumen.class);
-                                context.startActivity(intent);
 
+                                removeItem(position);
+                                notifyDataSetChanged();
 
                             }
                         }).setNegativeButton("CANCELAR", new DialogInterface.OnClickListener() {
@@ -228,6 +209,12 @@ public class AdapterResumen extends RecyclerView.Adapter<AdapterResumen.ViewHold
         });
 
 
+    }
+
+    public void removeItem(int position) {
+        this.listResumen.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, getItemCount() - position);
     }
     public String ultimaVez(){
         String numeroT=null;
@@ -289,7 +276,7 @@ public class AdapterResumen extends RecyclerView.Adapter<AdapterResumen.ViewHold
             Statement st = bdc.conexionBD(me.getServer(),me.getBase(),me.getUsuario(),me.getPass()).createStatement();
             String punto=holder.punto.getText().toString();
             String barcode=holder.bar.getText().toString();
-            ResultSet rs = st.executeQuery("lupita'"+barcode+"',"+punto+","+ultimaVez());
+            ResultSet rs = st.executeQuery("lupitaApartados'"+barcode+"',"+punto+","+ultimaVez()+",''");
             ResultSetMetaData rsmd=rs.getMetaData();
             while(rs.next()) {
 
@@ -323,6 +310,26 @@ public class AdapterResumen extends RecyclerView.Adapter<AdapterResumen.ViewHold
 
                 }catch (Exception e) {
             Toast.makeText(context, "Error al finalizar el pedido", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void consultarPrecio(final ViewHolderResumen holder){
+        try {
+            ConexionSQLiteHelper conn = new ConexionSQLiteHelper(context, "db tienda", null, 1);
+            SQLiteDatabase db = conn.getReadableDatabase();
+
+            String sql="SELECT total FROM contenedor where id="+holder.id.getText();
+            Cursor cursor = db.rawQuery(sql, null);
+            while (cursor.moveToNext()) {
+                double precio=cursor.getDouble(0);
+                BigDecimal bigDecimal=new BigDecimal(precio).setScale(2, RoundingMode.UP);
+
+                holder.total.setText(String.valueOf(bigDecimal.floatValue()));
+            }
+        }catch (RuntimeException r){
+
+        }catch (Exception e){
+
         }
     }
 

@@ -70,7 +70,6 @@
 
         <EditText
             android:id="@+id/idContraseña"
-
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPassword"

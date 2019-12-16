@@ -94,23 +94,7 @@ static Context context;
 
 
     }
-    public void mandarNoty(){
-        try {
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(getActivity(), CHANNERL_ID);
-            builder.setContentTitle("Esto es una notificacion ");
-            builder.setContentText("Hola");
-            builder.setColor(Color.BLUE);
-            builder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
-            builder.setLights(Color.BLUE, 1000, 1000);
-            builder.setVibrate(new long[]{1000, 1000, 1000, 1000});
-            builder.setDefaults(DEFAULT_SOUND);
-            NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(getActivity());
-            notificationManagerCompat.notify(NOTIFICACION, builder.build());
-        }catch (Exception e){
 
-        }
-
-    }
     public static int obtenerPosicionItem(Spinner spinner, String fruta) {
 
         int posicion = 0;

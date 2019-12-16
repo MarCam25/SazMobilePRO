@@ -30,7 +30,7 @@ public class AdapterDetalleVenta  extends RecyclerView.Adapter<AdapterDetalleVen
     ArrayList<DetalleVentas> listaDetalle;
     public static ModeloEmpresa me=new ModeloEmpresa();
     public static ConexionBDCliente bdc=new ConexionBDCliente();
-    int num;
+    String num;
 
 
     public AdapterDetalleVenta(ArrayList<DetalleVentas> listaDetalle) {
@@ -45,7 +45,7 @@ public class AdapterDetalleVenta  extends RecyclerView.Adapter<AdapterDetalleVen
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolderDetalleVenta holder, int i) {
+    public void onBindViewHolder(final ViewHolderDetalleVenta holder,final int i) {
         holder.txtEstilo.setText(listaDetalle.get(i).getEstilo());
         holder.txtColor.setText(listaDetalle.get(i).getColor());
         holder.txtMarca.setText(listaDetalle.get(i).getMarca());
@@ -67,10 +67,11 @@ public class AdapterDetalleVenta  extends RecyclerView.Adapter<AdapterDetalleVen
                 consultarDatos(holder);
                 rechazar(holder);
                 verificar(holder);
+                removeItem(i);
+                notifyDataSetChanged();
 
 
-                Intent intent=new Intent(holder.context,DetalleVenta.class);
-                holder.context.startActivity(intent);
+
 
 
                             }
@@ -84,12 +85,20 @@ public class AdapterDetalleVenta  extends RecyclerView.Adapter<AdapterDetalleVen
                 AlertDialog titulo=alerta.create();
                 titulo.setTitle("ELIMINAR ORDEN");
                 titulo.show();
+
             }
         });
 
 
 
     }
+
+    public void removeItem(int position) {
+        this.listaDetalle.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, getItemCount() - position);
+    }
+
 
     public void verificar(final ViewHolderDetalleVenta holder){
         int cont=0;
@@ -104,7 +113,6 @@ public class AdapterDetalleVenta  extends RecyclerView.Adapter<AdapterDetalleVen
             if(cont==0){
                 rechazarComandero(holder);
                 rechazarDetalle(holder);
-                rechazarLog(holder);
                 Principal.location=2;
                 Intent intent=new Intent(holder.context,menu.class);
                 holder.context.startActivity(intent);
@@ -120,7 +128,7 @@ public class AdapterDetalleVenta  extends RecyclerView.Adapter<AdapterDetalleVen
         try {
 
             Statement st = bdc.conexionBD(me.getServer(),me.getBase(),me.getUsuario(),me.getPass()).createStatement();
-            String sql="DELETE FROM comanderoDet where llave='"+holder.txtLlave.getText().toString()+"'";
+            String sql="Update  comanderoDet set status=10 where llave='"+holder.txtLlave.getText().toString()+"'";
             st.executeUpdate(sql);
 
 
@@ -133,7 +141,7 @@ public class AdapterDetalleVenta  extends RecyclerView.Adapter<AdapterDetalleVen
         try {
 
             Statement st = bdc.conexionBD(me.getServer(),me.getBase(),me.getUsuario(),me.getPass()).createStatement();
-            String sql="DELETE FROM comandero WHERE numero="+num;
+            String sql="UPDATE comandero SET [status]=10 WHERE numero="+num;
             ResultSet rs = st.executeQuery(sql);
             ModeloResumen mr=null;
 
@@ -150,7 +158,7 @@ public class AdapterDetalleVenta  extends RecyclerView.Adapter<AdapterDetalleVen
         try {
 
             Statement st = bdc.conexionBD(me.getServer(),me.getBase(),me.getUsuario(),me.getPass()).createStatement();
-            String sql="DELETE FROM comanderoDet WHERE numero="+num;
+            String sql="UPDATE comanderoDet set [status]=10 WHERE numero="+num;
             st.executeUpdate(sql);
             ModeloResumen mr=null;
 
@@ -162,43 +170,38 @@ public class AdapterDetalleVenta  extends RecyclerView.Adapter<AdapterDetalleVen
         }
     }
 
-    public void rechazarLog( final ViewHolderDetalleVenta holder){
-        try {
 
-            Statement st = bdc.conexionBD(me.getServer(),me.getBase(),me.getUsuario(),me.getPass()).createStatement();
-            String sql="DELETE FROM comanderoLog WHERE numero="+num;
-            st.executeUpdate(sql);
-        } catch (Exception e) {
-
-        }
-    }
 
     public void consultarDatos(final ViewHolderDetalleVenta holder ){
 
-        int barcode=0;
+        String barcode="";
+        String tienda="";
+        String talla="";
         try {
 
             Statement st = bdc.conexionBD(me.getServer(),me.getBase(),me.getUsuario(),me.getPass()).createStatement();
-            String sql="select barcode,numero from comanderoDet where llave='"+holder.txtLlave.getText().toString()+"'";
+            String sql="select tienda,numero,barcode , talla  from comanderoDet where llave='"+holder.txtLlave.getText().toString()+"'";
             ResultSet rs=st.executeQuery(sql);
-            ModeloResumen mr=null;
+
             while(rs.next()){
-                barcode=rs.getInt(1);
-                num=rs.getInt(2);
-                regresarPedido(barcode, holder);
+                tienda=rs.getString(1);
+                num=rs.getString(2);
+                barcode=rs.getString(3);
+                talla=rs.getString(4);
+                regresarPedido(barcode, tienda, talla,holder);
             }
 
 
 
         } catch (Exception e) {
-
+            e.getMessage();
         }
     }
-    public void regresarPedido(int pares,final ViewHolderDetalleVenta holder){
+    public void regresarPedido(String barcode, String tienda, String talla,final ViewHolderDetalleVenta holder){
         try {
 
             Statement st = bdc.conexionBD(me.getServer(),me.getBase(),me.getUsuario(),me.getPass()).createStatement();
-            String sql="UPDATE existen cantidad=cantidad+1, pedido-1  where llave='"+holder.txtLlave.getText().toString()+"'";
+            String sql="UPDATE  existen set cantreal=cantreal-1, pedido=pedido-1  where barcode='"+barcode+"' and tienda="+tienda+" and talla="+talla+" ";
             st.executeUpdate(sql);
 
 

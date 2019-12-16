@@ -42,7 +42,7 @@ public class AdaptadorZonas extends RecyclerView.Adapter<AdaptadorZonas.ViewHold
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolderZonas holder, int position) {
+    public void onBindViewHolder(final ViewHolderZonas holder, final int position) {
         holder.idtienda.setText(listaZonas.get(position).getIdTienda());
         holder.nombre.setText(listaZonas.get(position).getNombre());
         holder.idArea.setText(listaZonas.get(position).getIdArea());
@@ -59,6 +59,8 @@ public class AdaptadorZonas extends RecyclerView.Adapter<AdaptadorZonas.ViewHold
                             public void onClick(DialogInterface dialog, int which) {
 
                                 eliminar(holder);
+                                removeItem(position);
+                                notifyDataSetChanged();
                             }
                         }).setNegativeButton("CANCELAR", new DialogInterface.OnClickListener() {
                     @Override
@@ -68,7 +70,7 @@ public class AdaptadorZonas extends RecyclerView.Adapter<AdaptadorZonas.ViewHold
                 });
 
                 AlertDialog titulo=alerta.create();
-                titulo.setTitle("EDITAR ORDEN");
+                titulo.setTitle("Eliminar zona");
                 titulo.show();
             }
         });
@@ -87,7 +89,7 @@ public class AdaptadorZonas extends RecyclerView.Adapter<AdaptadorZonas.ViewHold
             String sql="DELETE FROM ZonasDeSurtido  WHERE idZona="+holder.idZona.getText().toString();
             st.executeUpdate(sql);
             Toast.makeText(holder.context, "Zona eliminada", Toast.LENGTH_SHORT).show();
-            actualizarPagina(holder);
+
 
 
         } catch (Exception e) {
@@ -107,9 +109,11 @@ public class AdaptadorZonas extends RecyclerView.Adapter<AdaptadorZonas.ViewHold
         Area.zonaEdicion=holder.nombreArea.getText().toString();
     }
 
-    public void actualizarPagina(final ViewHolderZonas holder){
-        Intent orden = new Intent(holder.context, Area.class);
-        holder.context.startActivity(orden);
+
+    public void removeItem(int position) {
+        this.listaZonas.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, getItemCount() - position);
     }
     @Override
     public int getItemCount() {

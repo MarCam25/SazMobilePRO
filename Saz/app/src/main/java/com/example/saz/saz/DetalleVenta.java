@@ -47,7 +47,7 @@ public class DetalleVenta extends AppCompatActivity {
         try {
 
             Statement st = bdc.conexionBD(me.getServer(),me.getBase(),me.getUsuario(),me.getPass()).createStatement();
-            String sql="select acabado, estilo, talla, color, marca, llave from comanderoDet where numero="+numero.getNumero()+" and [status]=7";
+            String sql="select acabado, estilo, talla, color, marca, llave from comanderoDet where numero="+numero.getNumero()+" and [status]=1";
             ResultSet rs = st.executeQuery(sql);
             ModeloResumen mr=null;
 
